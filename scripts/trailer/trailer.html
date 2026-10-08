@@ -199,8 +199,8 @@ const SCENES = {
   C(l) {
     const name = 'Notion for Naps', n = Math.floor(clamp((l - .15) / .8) * name.length);
     $('C1').innerHTML = name.slice(0, n) + (Math.floor(l * 2.2) % 2 === 0 && n < name.length ? '<i class="caret"></i>' : '');
-    const k = ease((l - .6) / .75);
-    const bx = 960, by = 770 + 58;
+    const k = ease((l - .35) / .7);
+    const r = $('C2').getBoundingClientRect(), bx = r.left + r.width / 2 - 5, by = r.top + r.height / 2;   // arrow tip lands on the button's centre
     const cx = 1560 + (bx - 1560) * k, cy = 960 + (by - 960) * k;
     const click = l > 1.2;
     $('C2').className = 'btn' + (click ? ' done' : '');
