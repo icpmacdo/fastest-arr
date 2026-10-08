@@ -1,0 +1,31 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Fastest ARR phone check</title>
+<!-- Dev harness: five 390px phones (idle, mid-round, result, dissolved, leaderboard). Serve the repo root over http and open /scripts/phone-check.html.
+     It seeds a sample leaderboard into this origin's localStorage (overwriting it), so don't use it on an origin whose scores you care about. -->
+<script>
+  localStorage.setItem('fastest-arr:board', JSON.stringify([
+    { id: 'a', co: 'Cursor for Cats', arr: 62.4e6, ms: 250, at: 0 },
+    { id: 'b', co: 'Stripe for Lemonade Stands', arr: 25.7e6, ms: 400, at: 0 },
+    { id: 'c', co: 'Uber for Ferns', arr: 15.6e6, ms: 500, at: 0 },
+    { id: 'd', co: 'GPT Wrapper #4,812', arr: 1.95e6, ms: 1000, at: 0 },
+  ]));
+</script>
+<style>
+  body { margin: 0; display: flex; gap: 6px; background: #888; }
+  iframe { width: 390px; height: 844px; border: 0; background: #fff; }
+</style>
+<iframe id="idle" src="../index.html?dev"></iframe>
+<iframe id="live" src="../index.html?dev"></iframe>
+<iframe id="result" src="../index.html?dev"></iframe>
+<iframe id="dissolved" src="../index.html?dev"></iframe>
+<iframe id="board" src="../index.html?dev"></iframe>
+<script>
+  addEventListener('load', () => {
+    const w = id => document.getElementById(id).contentWindow;
+    w('live').fastestArr.start();
+    w('result').fastestArr.finish(300);
+    w('dissolved').fastestArr.finish(5000);
+    w('board').document.getElementById('boardBtn').click();
+  });
+</script>

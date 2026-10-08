@@ -1,0 +1,1086 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fastest ARR</title>
+<meta name="description" content="Incorporate, then collect your first micropayment before it depreciates. We annualize it.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fastest ARR">
+<meta property="og:description" content="Incorporate. Collect a $0.99 micropayment before it depreciates. We annualize it. What's your run rate?">
+<meta property="og:url" content="https://ian-macdonald.me/fastest-arr/">
+<meta property="og:image" content="https://ian-macdonald.me/fastest-arr/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ian-macdonald.me/fastest-arr/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%88%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f5f6fb;
+    --surface: #ffffff;
+    --surface-2: #eef0f7;
+    --ink: #0b1020;
+    --ink-2: #4a5268;
+    --ink-3: #868da3;
+    --line: #dde1ec;
+    --grid: rgba(11, 16, 32, 0.045);
+    --brand: #5b4dff;
+    --brand-ink: #ffffff;
+    --money: #00a96b;
+    --money-bright: #10c983;
+    --money-ink: #03200f;
+    --danger: #e0393f;
+    --shadow: 0 18px 50px rgba(15, 20, 40, 0.16);
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #070a14;
+      --surface: #0e1324;
+      --surface-2: #151b31;
+      --ink: #eef1fa;
+      --ink-2: #a6aec6;
+      --ink-3: #6b7390;
+      --line: #222941;
+      --grid: rgba(238, 241, 250, 0.04);
+      --brand: #7a6cff;
+      --money: #22e39a;
+      --money-bright: #22e39a;
+      --money-ink: #03200f;
+      --danger: #ff5d63;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+
+  .app { display: flex; flex-direction: column; height: 100dvh; }
+
+  /* ---------- header ---------- */
+  .bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    padding-top: max(10px, env(safe-area-inset-top));
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .logo {
+    font-family: var(--mono);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .logo span { color: var(--money); }
+  .bar-right { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .pb {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pb b { color: var(--money); font-weight: 700; }
+  .ghost {
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .ghost:hover { border-color: var(--ink-3); }
+  .ghost.icon { padding: 6px 9px; line-height: 1; }
+
+  /* ---------- arena ---------- */
+  .arena {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: center;
+  }
+  .center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 16px;
+    text-align: center;
+  }
+  .copy { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 620px; }
+  .kicker {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--money);
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(30px, 6vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+  .sub { margin: 0; color: var(--ink-2); font-size: clamp(15px, 2.2vw, 18px); line-height: 1.45; max-width: 520px; }
+  .sub b { color: var(--ink); }
+
+  .co-row { display: flex; align-items: center; gap: 8px; width: min(340px, 100%); }
+  .co-row label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .co-row input {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center;
+  }
+  .co-row input:focus { outline: 2px solid var(--brand); outline-offset: 1px; }
+  .co-row button {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    font-size: 20px;
+  }
+
+  .btn-incorporate {
+    position: relative;
+    width: min(300px, 100%);
+    height: 96px;
+    border: 0;
+    border-radius: 20px;
+    background: var(--brand);
+    color: var(--brand-ink);
+    box-shadow: 0 8px 0 color-mix(in srgb, var(--brand) 55%, black), var(--shadow);
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    touch-action: manipulation;
+    transition: transform 0.05s, box-shadow 0.05s;
+  }
+  .btn-incorporate small { display: block; font-size: 13px; font-weight: 500; opacity: 0.8; letter-spacing: 0; margin-top: 2px; }
+  .btn-incorporate:active { transform: translateY(6px); box-shadow: 0 2px 0 color-mix(in srgb, var(--brand) 55%, black), var(--shadow); }
+  .btn-incorporate.done {
+    background: transparent;
+    color: var(--brand);
+    box-shadow: inset 0 0 0 3px var(--brand);
+    transform: rotate(-4deg);
+    cursor: default;
+  }
+
+  .howto {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .howto li {
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .howto b { font-family: var(--mono); color: var(--ink); margin-right: 4px; }
+
+  body[data-state="live"] .copy,
+  body[data-state="live"] .co-row,
+  body[data-state="live"] .howto,
+  body[data-state="done"] .copy,
+  body[data-state="done"] .co-row,
+  body[data-state="done"] .howto { visibility: hidden; }
+
+  .btn-collect {
+    position: absolute;
+    z-index: 5;
+    transform: translate(-50%, -50%);
+    width: 176px;
+    padding: 10px 12px 12px;
+    border: 0;
+    border-radius: 18px;
+    background: var(--money-bright);
+    color: var(--money-ink);
+    box-shadow: 0 6px 0 color-mix(in srgb, var(--money-bright) 50%, black), var(--shadow);
+    touch-action: manipulation;
+    animation: pop 0.12s ease-out;
+  }
+  .btn-collect[hidden] { display: none; }
+  .btn-collect .lbl { display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
+  .btn-collect .val { display: block; font-family: var(--mono); font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .btn-collect.cold { background: #f5c542; box-shadow: 0 6px 0 #8a6a12, var(--shadow); }
+  .btn-collect.dead { background: #ff8a6a; box-shadow: 0 6px 0 #8a3320, var(--shadow); }
+  @keyframes pop { from { transform: translate(-50%, -50%) scale(0.85); } to { transform: translate(-50%, -50%) scale(1); } }
+
+  .live {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    pointer-events: none;
+    width: calc(100% - 32px);
+  }
+  .live[hidden] { display: none; }
+  .live-label { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+  .live-arr { font-family: var(--mono); font-weight: 800; font-size: clamp(34px, 7vw, 64px); color: var(--money); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .live-t { font-family: var(--mono); font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+  .pivot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--danger);
+    pointer-events: none;
+    animation: rise 0.6s ease-out forwards;
+  }
+  @keyframes rise { to { opacity: 0; transform: translate(-50%, -150%); } }
+
+  /* ---------- sheets (results + leaderboard) ---------- */
+  .sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 24px 16px;
+    overflow-y: auto;
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .sheet[hidden] { display: none; }
+  .sheet.arming { pointer-events: none; }
+  .card {
+    width: min(540px, 100%);
+    margin: auto 0;
+    padding: 24px;
+    border-radius: 24px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    text-align: center;
+    animation: slide 0.25s ease-out;
+  }
+  @keyframes slide { from { opacity: 0; transform: translateY(16px); } }
+  .res-co { font-weight: 700; font-size: 18px; color: var(--ink-2); overflow-wrap: anywhere; }
+  .res-stage {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .res-arr {
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-weight: 800;
+    font-size: clamp(52px, 14vw, 88px);
+    line-height: 1;
+    color: var(--money);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+  }
+  .res-arr-label { font-family: var(--mono); font-weight: 700; font-size: 14px; letter-spacing: 0.2em; color: var(--ink-3); margin-top: 4px; }
+  [data-kind="dissolved"] .res-arr, [data-kind="flagged"] .res-arr { color: var(--danger); }
+  [data-kind="flagged"] .res-arr { text-decoration: line-through; text-decoration-thickness: 6px; }
+  .res-flavor { margin: 14px auto 0; max-width: 400px; color: var(--ink-2); line-height: 1.45; }
+  .res-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 18px 0 0;
+  }
+  .res-stats div { padding: 10px 6px; border-radius: 12px; background: var(--surface-2); min-width: 0; }
+  .res-stats dt { font-size: 11px; color: var(--ink-3); font-weight: 700; letter-spacing: 0.02em; }
+  .res-stats dd { margin: 4px 0 0; font-family: var(--mono); font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .res-math { margin: 12px 0 0; font-family: var(--mono); font-size: 12px; color: var(--ink-3); overflow-wrap: anywhere; }
+  .res-pb { margin-top: 12px; font-weight: 700; color: var(--money); min-height: 1.4em; }
+  .res-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 16px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+  }
+  .btn:hover { border-color: var(--ink-3); }
+  .btn.primary {
+    grid-column: 1 / -1;
+    min-height: 54px;
+    border: 0;
+    background: var(--brand);
+    color: var(--brand-ink);
+    font-size: 18px;
+  }
+  .board-title { margin: 22px 0 8px; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); text-align: left; }
+  .board { list-style: none; margin: 0; padding: 0; text-align: left; }
+  .board li {
+    display: grid;
+    grid-template-columns: 28px 1fr auto auto;
+    gap: 10px;
+    align-items: baseline;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  .board li:nth-child(odd) { background: var(--surface-2); }
+  .board li.me { outline: 2px solid var(--money); outline-offset: -2px; }
+  .board .rk { font-family: var(--mono); color: var(--ink-3); font-weight: 700; }
+  .board .nm { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .board .ar { font-family: var(--mono); font-weight: 800; color: var(--money); }
+  .board .tm { font-family: var(--mono); color: var(--ink-3); font-size: 12px; }
+  .board .empty { display: block; color: var(--ink-3); text-align: center; background: none; }
+  .board-note { margin: 10px 0 0; font-size: 12px; color: var(--ink-3); }
+  .sheet-close { margin-top: 16px; width: 100%; }
+  .dev-note { margin-top: 8px; font-family: var(--mono); font-size: 12px; color: var(--danger); }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: max(20px, env(safe-area-inset-bottom));
+    z-index: 40;
+    transform: translateX(-50%);
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--bg);
+    font-weight: 700;
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    max-width: calc(100% - 32px);
+    text-align: center;
+  }
+  .toast.show { opacity: 1; }
+  #confetti { position: fixed; inset: 0; z-index: 30; pointer-events: none; }
+
+  @media (max-width: 520px) {
+    .pb { display: none; }
+    .card { padding: 20px 16px; }
+    .res-stats { grid-template-columns: repeat(2, 1fr); }
+    .res-actions { grid-template-columns: 1fr 1fr; }
+    .res-actions #saveCard { grid-column: 1 / -1; }
+    .btn-incorporate { height: 84px; font-size: 26px; }
+    .btn-collect { width: 150px; }
+    .btn-collect .val { font-size: 22px; }
+  }
+  @media (max-height: 560px) {
+    .sub, .howto { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-collect, .card, .pivot { animation: none; }
+  }
+</style>
+</head>
+<body data-state="idle">
+<div class="app">
+  <header class="bar">
+    <div class="logo">📈 Fastest <span>ARR</span></div>
+    <div class="bar-right">
+      <span class="pb" id="pb"></span>
+      <button class="ghost" id="boardBtn" type="button">Leaderboard</button>
+      <button class="ghost icon" id="muteBtn" type="button" aria-label="Mute sound">🔊</button>
+    </div>
+  </header>
+
+  <main class="arena" id="arena">
+    <div class="center">
+      <div class="copy">
+        <p class="kicker">The only metric that matters</p>
+        <h1>Incorporate. Get paid.<br>Annualize.</h1>
+        <p class="sub">Your first micropayment starts at <b>$0.99</b> and <b>halves every 0.25&nbsp;s</b>. Collect it as fast as humanly possible and we extrapolate your yearly run rate.</p>
+      </div>
+      <div class="co-row">
+        <label for="co">Company name</label>
+        <input id="co" maxlength="32" autocomplete="off" spellcheck="false">
+        <button id="dice" type="button" aria-label="Random company name">🎲</button>
+      </div>
+      <button class="btn-incorporate" id="incorporate" type="button">Incorporate<small>Delaware C-Corp · $0 down</small></button>
+      <ul class="howto">
+        <li><b>1</b>Incorporate</li>
+        <li><b>2</b>Collect pops up nearby</li>
+        <li><b>3</b>We annualize it</li>
+      </ul>
+    </div>
+
+    <div class="live" id="live" hidden>
+      <div class="live-label">ARR if you collect now</div>
+      <div class="live-arr" id="liveArr">$0</div>
+      <div class="live-t" id="liveT">0.000 s since incorporation</div>
+    </div>
+
+    <button class="btn-collect" id="collect" type="button" tabindex="-1" hidden>
+      <span class="lbl">Collect micropayment</span>
+      <span class="val" id="collectVal">$0.9900</span>
+    </button>
+  </main>
+</div>
+
+<div class="sheet" id="results" role="dialog" aria-modal="true" aria-labelledby="resArr" hidden>
+  <div class="card">
+    <div class="res-co" id="resCo"></div>
+    <div class="res-stage" id="resStage"></div>
+    <div class="res-arr" id="resArr" aria-live="polite"></div>
+    <div class="res-arr-label">ARR</div>
+    <p class="res-flavor" id="resFlavor"></p>
+    <dl class="res-stats">
+      <div><dt>Time to revenue</dt><dd id="resT"></dd></div>
+      <div><dt>Micropayment</dt><dd id="resPay"></dd></div>
+      <div><dt>Valuation (25×)</dt><dd id="resVal"></dd></div>
+      <div><dt>Pivots</dt><dd id="resPivots"></dd></div>
+    </dl>
+    <p class="res-math" id="resMath"></p>
+    <div class="res-pb" id="resPb"></div>
+    <div class="dev-note" id="devNote" hidden>dev run, not saved</div>
+    <div class="res-actions">
+      <button class="btn primary" id="again" type="button">Run it back</button>
+      <a class="btn" id="post" target="_blank" rel="noopener">Post on 𝕏</a>
+      <button class="btn" id="copyPost" type="button">Copy post</button>
+      <button class="btn" id="saveCard" type="button">Save card</button>
+    </div>
+    <h2 class="board-title">Your leaderboard</h2>
+    <ol class="board" id="resBoard"></ol>
+  </div>
+</div>
+
+<div class="sheet" id="boardSheet" role="dialog" aria-modal="true" aria-labelledby="boardTitle" hidden>
+  <div class="card">
+    <h2 class="board-title" id="boardTitle" style="margin-top:0">Your leaderboard</h2>
+    <ol class="board" id="board"></ol>
+    <p class="board-note">Top 10 runs, saved in this browser.</p>
+    <button class="btn sheet-close" id="boardClose" type="button">Close</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<canvas id="confetti"></canvas>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---- tuning ----
+  const START_VALUE = 0.99;         // the micropayment, in dollars
+  const HALF_LIFE_MS = 250;         // it loses half its value every quarter second
+  const RUNWAY_MS = 4000;           // after this the company dissolves
+  const HUMAN_FLOOR_MS = 100;       // faster than this isn't a human reacting
+  const SECONDS_PER_YEAR = 31_536_000;
+  const MULTIPLE = 25;              // "conservative" ARR multiple for the valuation line
+  const SPAWN_DISTANCE = 240;       // px from where you pressed Incorporate
+  const BOARD_SIZE = 10;
+  const BOARD_KEY = 'fastest-arr:board';
+  const MUTE_KEY = 'fastest-arr:muted';
+  const CO_KEY = 'fastest-arr:company';
+
+  const STAGES = [
+    { min: 100e6, emoji: '🔔', name: 'IPO', flavor: 'Ring the bell. The S-1 just says "see attached clicks."' },
+    { min: 40e6, emoji: '🦄', name: 'Unicorn', flavor: '$1B+ at a conservative 25×. TechCrunch is typing…' },
+    { min: 15e6, emoji: '🚀', name: 'Series B', flavor: 'Time to hire a CRO and lease a floor in SoMa.' },
+    { min: 5e6, emoji: '📈', name: 'Series A', flavor: 'A partner wants to "learn more about the space."' },
+    { min: 1e6, emoji: '🌱', name: 'Seed', flavor: 'Congrats on your "$1M ARR" tweet. It is technically true.' },
+    { min: 100e3, emoji: '🥚', name: 'Pre-seed', flavor: 'Your parents are now strategic angels.' },
+    { min: -Infinity, emoji: '🏖️', name: 'Lifestyle business', flavor: 'Respectfully, this is a hobby.' },
+  ];
+  const DISSOLVED = { emoji: '🪦', name: 'Dissolved', flavor: 'Ran out of runway. The micropayment depreciated to dust.' };
+  const FLAGGED = { emoji: '🚨', name: 'Flagged by auditors', flavor: `Revenue recognized before a human could react (under ${HUMAN_FLOOR_MS} ms). Restating to $0.` };
+
+  const COMPANIES = [
+    'Uber for Ferns', 'Cursor for Cats', 'Stripe for Lemonade Stands', 'Agentic Toaster Inc.',
+    'Notion for Naps', 'Figma for Fish', 'Ramp for Raccoons', 'Linear for Laundry',
+    'GPT Wrapper #4,812', 'Vibe Capital LLC', 'Airbnb for Parking Cones', 'Palantir for Pets',
+    'Rippling for Ripples', 'Deel or No Deel', 'Brex for Brunch', 'Snowflake for Slush',
+  ];
+
+  // ---- the math ----
+  const payoutAt = ms => START_VALUE * Math.pow(0.5, ms / HALF_LIFE_MS);
+  const arrAt = ms => payoutAt(ms) / (ms / 1000) * SECONDS_PER_YEAR;
+  const stageFor = arr => STAGES.find(s => arr >= s.min);
+
+  function fmtMoney(n) {
+    if (!Number.isFinite(n)) return '$∞';
+    const units = [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']];
+    const sig = x => x >= 100 ? x.toFixed(0) : x >= 10 ? x.toFixed(1) : x.toFixed(2);
+    for (let i = 0; i < units.length; i++) {
+      const [v, s] = units[i];
+      if (n >= v) {
+        const str = sig(n / v);
+        // 999.96K would round to "1000K"; promote it to the next unit
+        if (parseFloat(str) >= 1000 && i > 0) return '$' + sig(n / units[i - 1][0]) + units[i - 1][1];
+        return '$' + str + s;
+      }
+    }
+    if (n >= 1) return '$' + Math.round(n).toLocaleString('en-US');
+    return '$' + n.toFixed(2);
+  }
+  const fmtSecs = ms => (ms / 1000).toFixed(3) + ' s';
+
+  // ---- storage (best effort; the game works without it) ----
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  };
+  const loadBoard = () => { const b = store.get(BOARD_KEY, []); return Array.isArray(b) ? b : []; };
+
+  function addToBoard(entry) {
+    const board = loadBoard();
+    board.push(entry);
+    board.sort((a, b) => b.arr - a.arr);
+    const top = board.slice(0, BOARD_SIZE);
+    store.set(BOARD_KEY, top);
+    const rank = top.findIndex(e => e.id === entry.id);
+    return rank === -1 ? null : rank;
+  }
+
+  // ---- sound ----
+  const sfx = (() => {
+    let ctx = null;
+    let muted = !!store.get(MUTE_KEY, false);
+    function ac() {
+      if (muted) return null;
+      if (!ctx) {
+        const C = window.AudioContext || window.webkitAudioContext;
+        if (!C) return null;
+        ctx = new C();
+      }
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+    function tone(freq, at, dur, type, gain, toFreq) {
+      const c = ac();
+      if (!c) return;
+      const t = c.currentTime + at;
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.type = type;
+      o.frequency.setValueAtTime(freq, t);
+      if (toFreq) o.frequency.exponentialRampToValueAtTime(toFreq, t + dur);
+      g.gain.setValueAtTime(gain, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(c.destination);
+      o.start(t);
+      o.stop(t + dur + 0.02);
+    }
+    return {
+      warm: () => ac(),
+      stamp: () => tone(160, 0, 0.14, 'triangle', 0.35, 55),
+      chaching: () => { tone(1318.5, 0, 0.08, 'square', 0.06); tone(1760, 0.07, 0.4, 'square', 0.06); tone(2637, 0.07, 0.35, 'sine', 0.05); },
+      miss: () => tone(200, 0, 0.07, 'sawtooth', 0.04),
+      sad: () => { tone(392, 0, 0.18, 'triangle', 0.2); tone(330, 0.18, 0.18, 'triangle', 0.2); tone(262, 0.36, 0.5, 'triangle', 0.2); },
+      get muted() { return muted; },
+      toggle() { muted = !muted; store.set(MUTE_KEY, muted); return muted; },
+    };
+  })();
+
+  // ---- elements ----
+  const $ = id => document.getElementById(id);
+  const arena = $('arena');
+  const incBtn = $('incorporate');
+  const collectBtn = $('collect');
+  const collectVal = $('collectVal');
+  const live = $('live');
+  const liveArr = $('liveArr');
+  const liveT = $('liveT');
+  const coInput = $('co');
+  const results = $('results');
+  const boardSheet = $('boardSheet');
+  const toastEl = $('toast');
+
+  let state = 'idle';   // idle | live | done
+  let t0 = 0;
+  let raf = 0;
+  let pivots = 0;
+  let lastResult = null;
+  const isDev = new URLSearchParams(location.search).has('dev');
+
+  const siteUrl = location.protocol.startsWith('http') ? location.origin + location.pathname : 'https://ian-macdonald.me/fastest-arr/';
+  const siteHost = siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
+  function randomCompany() {
+    let name;
+    do { name = COMPANIES[Math.floor(Math.random() * COMPANIES.length)]; } while (name === coInput.value && COMPANIES.length > 1);
+    return name;
+  }
+  coInput.value = store.get(CO_KEY, '') || randomCompany();
+  coInput.addEventListener('change', () => store.set(CO_KEY, coInput.value.trim()));
+  $('dice').addEventListener('click', () => { coInput.value = randomCompany(); store.set(CO_KEY, coInput.value); });
+  const companyName = () => coInput.value.trim() || 'Stealth Startup';
+
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => toastEl.classList.remove('show'), 1800);
+  }
+
+  function renderPb() {
+    const best = loadBoard()[0];
+    $('pb').innerHTML = best ? `Best <b>${fmtMoney(best.arr)}</b>` : 'No ARR yet';
+  }
+
+  function renderBoard(ol, highlightId) {
+    const board = loadBoard();
+    ol.replaceChildren();
+    if (!board.length) {
+      const li = document.createElement('li');
+      li.className = 'empty';
+      li.textContent = 'No revenue yet. Incorporate something.';
+      ol.append(li);
+      return;
+    }
+    board.forEach((e, i) => {
+      const li = document.createElement('li');
+      if (e.id === highlightId) li.className = 'me';
+      const cells = [['rk', '#' + (i + 1)], ['nm', e.co], ['ar', fmtMoney(e.arr)], ['tm', fmtSecs(e.ms)]];
+      for (const [cls, text] of cells) {
+        const span = document.createElement('span');
+        span.className = cls;
+        span.textContent = text;
+        li.append(span);
+      }
+      ol.append(li);
+    });
+  }
+
+  // ---- round ----
+  const isPrimary = e => e.pointerType !== 'mouse' || e.button === 0;
+
+  function placeCollect(px, py) {
+    collectBtn.hidden = false;
+    const a = arena.getBoundingClientRect();
+    const w = collectBtn.offsetWidth;
+    const h = collectBtn.offsetHeight;
+    const pad = 10;
+    const minX = a.left + pad + w / 2, maxX = a.right - pad - w / 2;
+    const minY = a.top + pad + h / 2, maxY = a.bottom - pad - h / 2;
+    const inc = incBtn.getBoundingClientRect();
+    const gap = 16;
+    const clearOfInc = (x, y) => x + w / 2 + gap < inc.left || x - w / 2 - gap > inc.right || y + h / 2 + gap < inc.top || y - h / 2 - gap > inc.bottom;
+    // Same distance every run, random direction, so no run is luckier than another.
+    // Small screens shrink the distance until something fits.
+    for (const needClear of [true, false]) for (let d = SPAWN_DISTANCE; d >= 60; d -= 20) {
+      const fits = [];
+      for (let i = 0; i < 72; i++) {
+        const ang = ((i + Math.random()) / 72) * Math.PI * 2;
+        const x = px + Math.cos(ang) * d;
+        const y = py + Math.sin(ang) * d;
+        if (x >= minX && x <= maxX && y >= minY && y <= maxY && (!needClear || clearOfInc(x, y))) fits.push([x, y]);
+      }
+      if (fits.length) {
+        const [x, y] = fits[Math.floor(Math.random() * fits.length)];
+        collectBtn.style.left = (x - a.left) + 'px';
+        collectBtn.style.top = (y - a.top) + 'px';
+        return;
+      }
+    }
+    collectBtn.style.left = (minX + Math.random() * (maxX - minX) - a.left) + 'px';
+    collectBtn.style.top = (minY + Math.random() * (maxY - minY) - a.top) + 'px';
+  }
+
+  function start(timeStamp, px, py) {
+    t0 = timeStamp;
+    pivots = 0;
+    state = 'live';
+    document.body.dataset.state = 'live';
+    if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
+    collectBtn.classList.remove('cold', 'dead');
+    collectVal.textContent = '$' + START_VALUE.toFixed(4);
+    incBtn.classList.add('done');
+    incBtn.firstChild.textContent = 'Incorporated ✓';
+    placeCollect(px, py);
+    live.hidden = false;
+    // keep the handler lean so the Collect button paints on the next frame
+    setTimeout(sfx.stamp, 0);
+    raf = requestAnimationFrame(tick);
+  }
+
+  function tick() {
+    const ms = performance.now() - t0;
+    if (ms >= RUNWAY_MS) { finish(ms); return; }
+    const pay = payoutAt(ms);
+    collectVal.textContent = '$' + pay.toFixed(4);
+    collectBtn.classList.toggle('cold', ms > 450 && ms <= 900);
+    collectBtn.classList.toggle('dead', ms > 900);
+    liveArr.textContent = fmtMoney(arrAt(Math.max(ms, 1)));
+    liveT.textContent = fmtSecs(ms) + ' since incorporation';
+    raf = requestAnimationFrame(tick);
+  }
+
+  function finish(ms, opts = {}) {
+    cancelAnimationFrame(raf);
+    state = 'done';
+    document.body.dataset.state = 'done';
+    collectBtn.hidden = true;
+    live.hidden = true;
+
+    let kind = 'ok';
+    if (ms >= RUNWAY_MS) { kind = 'dissolved'; ms = RUNWAY_MS; }
+    else if (ms < HUMAN_FLOOR_MS) kind = 'flagged';
+    const pay = kind === 'dissolved' ? 0 : payoutAt(ms);
+    const arr = kind === 'dissolved' ? 0 : arrAt(ms);
+    const stage = kind === 'dissolved' ? DISSOLVED : kind === 'flagged' ? FLAGGED : stageFor(arr);
+
+    const r = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), co: companyName(), ms, pay, arr, kind, stage, pivots, dev: !!opts.dev };
+    const prevBest = loadBoard()[0];
+    r.rank = (kind === 'ok' && !r.dev) ? addToBoard({ id: r.id, co: r.co, arr, ms, at: Date.now() }) : null;
+    r.newBest = r.rank === 0;
+    r.prevBest = prevBest;
+    lastResult = r;
+
+    if (kind === 'ok') { sfx.chaching(); navigator.vibrate?.(15); }
+    else sfx.sad();
+    setTimeout(() => showResults(r), kind === 'ok' ? 380 : 250);
+  }
+
+  function showResults(r) {
+    results.dataset.kind = r.kind;
+    $('resCo').textContent = r.co;
+    $('resStage').textContent = `${r.stage.emoji} ${r.stage.name}`;
+    $('resFlavor').textContent = r.stage.flavor;
+    $('resT').textContent = r.kind === 'dissolved' ? 'never' : fmtSecs(r.ms);
+    $('resPay').textContent = '$' + r.pay.toFixed(4);
+    $('resVal').textContent = r.kind === 'ok' ? fmtMoney(r.arr * MULTIPLE) : '—';
+    $('resPivots').textContent = r.pivots;
+    $('resMath').textContent = `$${r.pay.toFixed(4)} ÷ ${(r.ms / 1000).toFixed(3)} s × 31,536,000 s/yr = ${fmtMoney(r.arr)}`;
+    let pbText = '';
+    if (r.newBest) pbText = r.prevBest ? `New personal best! (was ${fmtMoney(r.prevBest.arr)})` : 'First revenue! Personal best set.';
+    else if (r.rank != null) pbText = `#${r.rank + 1} on your leaderboard`;
+    else if (r.kind === 'ok' && r.prevBest && !r.dev) pbText = `Personal best: ${fmtMoney(r.prevBest.arr)}`;
+    $('resPb').textContent = pbText;
+    $('devNote').hidden = !r.dev;
+    $('post').href = 'https://x.com/intent/post?text=' + encodeURIComponent(postText(r)) + '&url=' + encodeURIComponent(siteUrl);
+    renderBoard($('resBoard'), r.id);
+    renderPb();
+
+    results.hidden = false;
+    results.scrollTop = 0;
+    // the pointerup from the Collect press must not land on a results button
+    results.classList.add('arming');
+    setTimeout(() => results.classList.remove('arming'), 450);
+    countUp($('resArr'), r.arr);
+    $('again').focus({ preventScroll: true });
+
+    if (r.kind === 'ok' && (r.arr >= 40e6 || r.newBest)) confetti(r.arr >= 40e6 ? 220 : 90);
+  }
+
+  function countUp(el, target) {
+    const t1 = performance.now();
+    const dur = 900;
+    const step = now => {
+      // rAF's timestamp can predate t1 by a frame; clamp so the first frame never goes negative
+      const k = Math.max(0, Math.min(1, (now - t1) / dur));
+      const eased = 1 - Math.pow(1 - k, 3);
+      el.textContent = fmtMoney(target * eased);
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  function reset() {
+    cancelAnimationFrame(raf);
+    state = 'idle';
+    document.body.dataset.state = 'idle';
+    results.hidden = true;
+    collectBtn.hidden = true;
+    live.hidden = true;
+    incBtn.classList.remove('done');
+    incBtn.firstChild.textContent = 'Incorporate';
+  }
+
+  incBtn.addEventListener('pointerdown', e => {
+    if (state !== 'idle' || !isPrimary(e)) return;
+    e.stopPropagation();
+    if (!e.isTrusted) { toast('Synthetic incorporation rejected by Delaware.'); return; }
+    e.preventDefault();
+    start(e.timeStamp, e.clientX, e.clientY);
+  });
+
+  collectBtn.addEventListener('pointerdown', e => {
+    if (state !== 'live' || !isPrimary(e)) return;
+    e.stopPropagation();
+    if (!e.isTrusted) { toast('Auditors reject synthetic revenue.'); return; }
+    e.preventDefault();
+    finish(e.timeStamp - t0);
+  });
+
+  arena.addEventListener('pointerdown', e => {
+    if (state !== 'live' || !e.isTrusted) return;
+    pivots++;
+    sfx.miss();
+    const a = arena.getBoundingClientRect();
+    const tag = document.createElement('span');
+    tag.className = 'pivot';
+    tag.textContent = 'pivot';
+    tag.style.left = (e.clientX - a.left) + 'px';
+    tag.style.top = (e.clientY - a.top) + 'px';
+    arena.append(tag);
+    setTimeout(() => tag.remove(), 650);
+  });
+
+  // warm the audio context on an early gesture so the first round isn't slowed by it
+  document.addEventListener('pointerdown', () => setTimeout(sfx.warm, 0), { once: true });
+
+  // ---- results actions ----
+  const POSTS = [
+    r => `Thrilled to announce ${r.co} just crossed ${fmtMoney(r.arr)} ARR 🚀\n\nIncorporated → first micropayment in ${fmtSecs(r.ms)}. Annualized, obviously.`,
+    r => `Humbled to share that ${r.co} has hit ${r.stage.emoji} ${r.stage.name} status.\n\n${fmtMoney(r.arr)} ARR, ${fmtSecs(r.ms)} from incorporation to revenue. Grateful to the team (me) 🙏`,
+    r => `We don't talk about it much, but ${r.co} is doing ${fmtMoney(r.arr)} ARR.\n\n(${fmtSecs(r.ms)} of data, extrapolated. Like everyone else.)`,
+  ];
+  function postText(r) {
+    if (r.kind === 'dissolved') return `${r.co} ran out of runway ${fmtSecs(r.ms)} after incorporating 🪦\n\nShutting down to spend more time with my cap table. What's your run rate?`;
+    if (r.kind === 'flagged') return `${r.co} posted ${fmtMoney(r.arr)} ARR and immediately got flagged by the auditors 🚨`;
+    if (!r.postIdx) r.postIdx = 1 + Math.floor(Math.random() * POSTS.length);
+    return POSTS[r.postIdx - 1](r) + '\n\nBeat my run rate:';
+  }
+
+  $('again').addEventListener('click', reset);
+
+  $('copyPost').addEventListener('click', async () => {
+    if (!lastResult) return;
+    const text = postText(lastResult) + ' ' + siteUrl;
+    try { await navigator.clipboard.writeText(text); toast('Copied. Go raise.'); }
+    catch { toast('Copy failed. Your clipboard is pre-revenue.'); }
+  });
+
+  $('saveCard').addEventListener('click', async () => {
+    if (!lastResult) return;
+    const canvas = await drawCard(lastResult);
+    canvas.toBlob(async blob => {
+      if (!blob) { toast('Could not render the card.'); return; }
+      const slug = lastResult.co.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'startup';
+      const file = new File([blob], `fastest-arr-${slug}.png`, { type: 'image/png' });
+      if (matchMedia('(pointer: coarse)').matches && navigator.canShare?.({ files: [file] })) {
+        try { await navigator.share({ files: [file], text: postText(lastResult) + ' ' + siteUrl }); return; }
+        catch (err) { if (err.name === 'AbortError') return; }
+      }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = file.name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      toast('Card saved.');
+    }, 'image/png');
+  });
+
+  async function drawCard(r) {
+    try { await document.fonts.ready; } catch {}
+    const W = 1200, H = 630;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const g = c.getContext('2d');
+    const ok = r.kind === 'ok';
+    const accent = ok ? '#22e39a' : '#ff5d63';
+
+    const bg = g.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, '#070a14');
+    bg.addColorStop(1, '#111b36');
+    g.fillStyle = bg;
+    g.fillRect(0, 0, W, H);
+
+    g.strokeStyle = 'rgba(238,241,250,0.05)';
+    g.lineWidth = 1;
+    for (let x = 0; x <= W; x += 60) { g.beginPath(); g.moveTo(x + 0.5, 0); g.lineTo(x + 0.5, H); g.stroke(); }
+    for (let y = 0; y <= H; y += 60) { g.beginPath(); g.moveTo(0, y + 0.5); g.lineTo(W, y + 0.5); g.stroke(); }
+
+    // hockey stick (or the other kind)
+    g.save();
+    g.globalAlpha = 0.28;
+    g.strokeStyle = accent;
+    g.lineWidth = 8;
+    g.lineCap = 'round';
+    g.beginPath();
+    for (let i = 0; i <= 120; i++) {
+      const t = i / 120;
+      const x = 620 + t * 540;
+      const y = ok ? 490 - Math.pow(t, 5) * 400 : 110 + (1 - Math.pow(1 - t, 4)) * 380;
+      i ? g.lineTo(x, y) : g.moveTo(x, y);
+    }
+    g.stroke();
+    g.restore();
+
+    const fit = (text, maxW) => {
+      if (g.measureText(text).width <= maxW) return text;
+      let s = text;
+      while (s.length > 1 && g.measureText(s + '…').width > maxW) s = s.slice(0, -1);
+      return s + '…';
+    };
+
+    g.textBaseline = 'alphabetic';
+    g.fillStyle = '#22e39a';
+    g.font = '800 30px "JetBrains Mono", ui-monospace, monospace';
+    g.fillText('📈 FASTEST ARR', 64, 92);
+
+    g.fillStyle = '#eef1fa';
+    g.font = '700 50px "Space Grotesk", system-ui, sans-serif';
+    g.fillText(fit(r.co, W - 128), 64, 190);
+
+    const arrStr = fmtMoney(r.arr);
+    g.fillStyle = accent;
+    g.font = '800 172px "JetBrains Mono", ui-monospace, monospace';
+    g.fillText(arrStr, 56, 372);
+    const arrW = g.measureText(arrStr).width;
+    if (r.kind === 'flagged') g.fillRect(56, 312, arrW, 12);
+    g.fillStyle = '#a6aec6';
+    g.font = '800 46px "JetBrains Mono", ui-monospace, monospace';
+    g.fillText('ARR', 56 + arrW + 22, 372);
+
+    g.fillStyle = '#eef1fa';
+    g.font = '700 36px "Space Grotesk", system-ui, sans-serif';
+    const stageLine = `${r.stage.emoji} ${r.stage.name}` + (ok ? `  ·  ${fmtMoney(r.arr * MULTIPLE)} valuation` : '');
+    g.fillText(fit(stageLine, W - 128), 64, 452);
+
+    g.fillStyle = '#a6aec6';
+    g.font = '500 28px "Space Grotesk", system-ui, sans-serif';
+    const line = r.kind === 'dissolved' ? `Ran out of runway ${fmtSecs(r.ms)} after incorporating.` : `Incorporated → first micropayment in ${fmtSecs(r.ms)}. Annualized, obviously.`;
+    g.fillText(fit(line, W - 128), 64, 540);
+
+    g.fillStyle = '#6b7390';
+    g.font = '700 24px "JetBrains Mono", ui-monospace, monospace';
+    g.fillText(siteHost, 64, 586);
+    return c;
+  }
+
+  // ---- leaderboard sheet ----
+  function openBoard() {
+    renderBoard($('board'));
+    boardSheet.hidden = false;
+    $('boardClose').focus({ preventScroll: true });
+  }
+  const closeBoard = () => { boardSheet.hidden = true; };
+  $('boardBtn').addEventListener('click', () => { if (state !== 'live') openBoard(); });
+  $('boardClose').addEventListener('click', closeBoard);
+  boardSheet.addEventListener('click', e => { if (e.target === boardSheet) closeBoard(); });
+
+  const muteBtn = $('muteBtn');
+  const renderMute = () => {
+    muteBtn.textContent = sfx.muted ? '🔇' : '🔊';
+    muteBtn.setAttribute('aria-label', sfx.muted ? 'Unmute sound' : 'Mute sound');
+  };
+  muteBtn.addEventListener('click', () => { sfx.toggle(); renderMute(); });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      if (!boardSheet.hidden) closeBoard();
+      else if (!results.hidden) reset();
+    } else if ((e.key === 'r' || e.key === 'R') && !results.hidden && !e.metaKey && !e.ctrlKey) {
+      reset();
+    }
+  });
+
+  // ---- confetti ----
+  const confettiCanvas = $('confetti');
+  function confetti(count) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const g = confettiCanvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    confettiCanvas.width = innerWidth * dpr;
+    confettiCanvas.height = innerHeight * dpr;
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const colors = ['#22e39a', '#7a6cff', '#f5c542', '#ff5d63', '#4cc9ff'];
+    const parts = Array.from({ length: count }, () => ({
+      x: innerWidth / 2 + (Math.random() - 0.5) * 120,
+      y: innerHeight * 0.35,
+      vx: (Math.random() - 0.5) * 16,
+      vy: -Math.random() * 15 - 5,
+      r: Math.random() * Math.PI,
+      vr: (Math.random() - 0.5) * 0.4,
+      s: 6 + Math.random() * 6,
+      c: colors[Math.floor(Math.random() * colors.length)],
+    }));
+    const t1 = performance.now();
+    const step = now => {
+      g.clearRect(0, 0, innerWidth, innerHeight);
+      for (const p of parts) {
+        p.vy += 0.45; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        g.save(); g.translate(p.x, p.y); g.rotate(p.r);
+        g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2);
+        g.restore();
+      }
+      if (now - t1 < 2600) requestAnimationFrame(step);
+      else g.clearRect(0, 0, innerWidth, innerHeight);
+    };
+    requestAnimationFrame(step);
+  }
+
+  renderPb();
+  renderMute();
+
+  // ?dev exposes the math and lets a test harness finish a round at a chosen time (never saved).
+  if (isDev) {
+    window.fastestArr = {
+      payoutAt, arrAt, stageFor, fmtMoney, postText,
+      start() {
+        const a = arena.getBoundingClientRect();
+        if (state === 'idle') start(performance.now(), a.left + a.width / 2, a.top + a.height / 2);
+      },
+      finish(ms) {
+        const a = arena.getBoundingClientRect();
+        if (state === 'idle') start(performance.now(), a.left + a.width / 2, a.top + a.height / 2);
+        finish(ms, { dev: true });
+      },
+      drawCard: () => lastResult && drawCard(lastResult).then(c => c.toDataURL('image/png')),
+    };
+  }
+})();
+</script>
+</body>
+</html>
