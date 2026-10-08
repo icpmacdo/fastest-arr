@@ -10,7 +10,7 @@ ARR = payment ÷ seconds since incorporation × 31,536,000
 
 Collect in 0.300 s and you get $0.4309, or **$45,298,576 in annual recurring revenue**. At a "conservative" 25× multiple, that makes you a unicorn. Collect at 1 s and you're a seed-stage company at $1.95M. Wait 4 s and the company is wound down.
 
-**Play:** https://ian-macdonald.me/fastest-arr/
+**Play:** https://fastest-arr.icpmacdo.workers.dev/
 
 | Stage | ARR | Roughly |
 |---|---|---|
@@ -47,7 +47,7 @@ A Cloudflare Worker with one SQLite-backed Durable Object holding the whole boar
 cd worker
 npx wrangler dev --port 8799            # local API; then open the game at /?dev&api=http://127.0.0.1:8799
 ./test-local.sh                         # 19 API checks against a fresh local `wrangler dev`
-npx wrangler deploy                     # → https://fastest-arr-api.icpmacdo.workers.dev
+./deploy.sh                             # page + API, one Worker → https://fastest-arr.icpmacdo.workers.dev
 ./remove.sh "Some Company Name"         # moderation: delete entries with that exact name
 ```
 

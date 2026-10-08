@@ -8,10 +8,10 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Fastest ARR">
 <meta property="og:description" content="Incorporate, then collect your first payment. It halves every quarter second. We annualize whatever you get.">
-<meta property="og:url" content="https://ian-macdonald.me/fastest-arr/">
-<meta property="og:image" content="https://ian-macdonald.me/fastest-arr/og.png">
+<meta property="og:url" content="https://fastest-arr.icpmacdo.workers.dev/">
+<meta property="og:image" content="https://fastest-arr.icpmacdo.workers.dev/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ian-macdonald.me/fastest-arr/og.png">
+<meta name="twitter:image" content="https://fastest-arr.icpmacdo.workers.dev/og.png">
 <meta name="theme-color" content="#fbfaf7">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231c1b18'/%3E%3Cpath d='M7 23l7-6 4 3 7-11' stroke='%23f3eee4' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -511,7 +511,9 @@
   const isDev = params.has('dev');
   // ?dev&api=http://127.0.0.1:8799 points the game at a local `wrangler dev` instead of production.
   // Faked ?dev rounds are only ever submitted to such a non-production API.
-  const PROD_API = 'https://fastest-arr-api.icpmacdo.workers.dev';
+  // The Worker serves this page and the API from one origin; opened from a file or localhost it talks to the deployed one.
+  const onWeb = location.protocol.startsWith('http') && !['localhost', '127.0.0.1'].includes(location.hostname);
+  const PROD_API = onWeb ? location.origin : 'https://fastest-arr.icpmacdo.workers.dev';
   const API = (isDev && params.get('api')) || PROD_API;
   const submits = r => r.kind === 'ok' && (!r.dev || API !== PROD_API);
 
@@ -652,7 +654,7 @@
   let pivots = 0;
   let lastResult = null;
 
-  const siteUrl = location.protocol.startsWith('http') ? location.origin + location.pathname.replace(/index\.html$/, '') : 'https://ian-macdonald.me/fastest-arr/';
+  const siteUrl = location.protocol.startsWith('http') ? location.origin + location.pathname.replace(/index\.html$/, '') : 'https://fastest-arr.icpmacdo.workers.dev/';
   const siteHost = siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
 
   function randomCompany() {

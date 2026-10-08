@@ -1,9 +1,13 @@
-name = "fastest-arr-api"
+name = "fastest-arr"
 main = "src/index.js"
 compatibility_date = "2026-09-15"
 
 # One global leaderboard, stored in a SQLite-backed Durable Object.
 # (D1 would also work, but the account is at the free plan's 10-database cap.)
+# The page itself (index.html, og.png) is served from .site/, which deploy.sh fills before `wrangler deploy`.
+[assets]
+directory = ".site"
+
 [[durable_objects.bindings]]
 name = "BOARD"
 class_name = "Board"

@@ -101,7 +101,7 @@ export default {
         return json({ removed });
       }
 
-      if (req.method === 'GET' && url.pathname === '/') return json({ name: 'fastest-arr-api', ok: true });
+      if (req.method === 'GET' && url.pathname === '/') return json({ name: 'fastest-arr', ok: true });
       return json({ error: 'not found' }, 404);
     } catch (err) {
       console.error(err);
