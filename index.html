@@ -4,55 +4,47 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Fastest ARR</title>
-<meta name="description" content="Incorporate, then collect your first micropayment before it depreciates. We annualize it.">
+<meta name="description" content="Incorporate, then collect your first payment before it depreciates. We annualize it.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Fastest ARR">
-<meta property="og:description" content="Incorporate. Collect a $0.99 micropayment before it depreciates. We annualize it. What's your run rate?">
+<meta property="og:description" content="Incorporate, then collect your first payment. It halves every quarter second. We annualize whatever you get.">
 <meta property="og:url" content="https://ian-macdonald.me/fastest-arr/">
 <meta property="og:image" content="https://ian-macdonald.me/fastest-arr/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://ian-macdonald.me/fastest-arr/og.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%88%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#f3eee4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151412" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231c1b18'/%3E%3Cpath d='M7 23l7-6 4 3 7-11' stroke='%23f3eee4' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <style>
   :root {
     color-scheme: light dark;
-    --bg: #f5f6fb;
-    --surface: #ffffff;
-    --surface-2: #eef0f7;
-    --ink: #0b1020;
-    --ink-2: #4a5268;
-    --ink-3: #868da3;
-    --line: #dde1ec;
-    --grid: rgba(11, 16, 32, 0.045);
-    --brand: #5b4dff;
-    --brand-ink: #ffffff;
-    --money: #00a96b;
-    --money-bright: #10c983;
-    --money-ink: #03200f;
-    --danger: #e0393f;
-    --shadow: 0 18px 50px rgba(15, 20, 40, 0.16);
-    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --sans: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --paper: #f3eee4;
+    --paper-2: #ebe4d6;
+    --ink: #1c1b18;
+    --ink-2: #4f4b44;
+    --ink-3: #8b8578;
+    --rule: #d6cebf;
+    --green: #1d6a44;
+    --green-ink: #f6f2ea;
+    --red: #a3392e;
+    --serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bar-h: calc(52px + env(safe-area-inset-top));
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #070a14;
-      --surface: #0e1324;
-      --surface-2: #151b31;
-      --ink: #eef1fa;
-      --ink-2: #a6aec6;
-      --ink-3: #6b7390;
-      --line: #222941;
-      --grid: rgba(238, 241, 250, 0.04);
-      --brand: #7a6cff;
-      --money: #22e39a;
-      --money-bright: #22e39a;
-      --money-ink: #03200f;
-      --danger: #ff5d63;
-      --shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+      --paper: #151412;
+      --paper-2: #1f1d1a;
+      --ink: #ece6da;
+      --ink-2: #b8b1a4;
+      --ink-3: #7f796e;
+      --rule: #34312c;
+      --green: #7cc59c;
+      --green-ink: #0e1a13;
+      --red: #e07a6e;
     }
   }
 
@@ -60,14 +52,42 @@
   html, body { height: 100%; }
   body {
     margin: 0;
-    background: var(--bg);
+    background: var(--paper);
     color: var(--ink);
-    font-family: var(--sans);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
     overflow: hidden;
   }
   button, input { font: inherit; color: inherit; }
   button { cursor: pointer; }
+  .num { font-variant-numeric: lining-nums tabular-nums; }
+  .label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .link {
+    padding: 4px 0;
+    border: 0;
+    background: none;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    white-space: nowrap;
+  }
+  .link:hover { color: var(--ink); text-decoration-color: currentColor; }
+  :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 
   .app { display: flex; flex-direction: column; height: 100dvh; }
 
@@ -77,42 +97,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    padding: 10px 16px;
-    padding-top: max(10px, env(safe-area-inset-top));
-    background: var(--surface);
-    border-bottom: 1px solid var(--line);
+    gap: 16px;
+    height: var(--bar-h);
+    padding: env(safe-area-inset-top) 20px 0;
+    border-bottom: 1px solid var(--rule);
   }
-  .logo {
-    font-family: var(--mono);
-    font-weight: 800;
-    font-size: 15px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .logo span { color: var(--money); }
-  .bar-right { display: flex; align-items: center; gap: 8px; min-width: 0; }
-  .pb {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--ink-2);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .pb b { color: var(--money); font-weight: 700; }
-  .ghost {
-    border: 1px solid var(--line);
-    background: var(--surface-2);
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-size: 13px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  .ghost:hover { border-color: var(--ink-3); }
-  .ghost.icon { padding: 6px 9px; line-height: 1; }
+  .wordmark { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
+  .bar-right { display: flex; align-items: center; gap: 20px; min-width: 0; }
+  .pb { font-family: var(--sans); font-size: 13px; color: var(--ink-3); white-space: nowrap; }
+  .pb b { font-weight: 500; color: var(--ink-2); }
 
   /* ---------- arena ---------- */
   .arena {
@@ -123,433 +116,404 @@
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
-    background-image:
-      linear-gradient(var(--grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size: 48px 48px;
-    background-position: center;
   }
-  .center {
+  .intro {
     position: absolute;
     inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
-    padding: 16px;
+    padding: 24px 20px 48px;
     text-align: center;
-  }
-  .copy { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 620px; }
-  .kicker {
-    margin: 0;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--money);
   }
   h1 {
     margin: 0;
-    font-size: clamp(30px, 6vw, 56px);
-    line-height: 1.02;
-    letter-spacing: -0.03em;
-    font-weight: 700;
+    max-width: 13em;
+    font-size: clamp(36px, 5.4vw, 58px);
+    font-weight: 500;
+    line-height: 1.04;
+    letter-spacing: -0.022em;
+    text-wrap: balance;
   }
-  .sub { margin: 0; color: var(--ink-2); font-size: clamp(15px, 2.2vw, 18px); line-height: 1.45; max-width: 520px; }
-  .sub b { color: var(--ink); }
-
-  .co-row { display: flex; align-items: center; gap: 8px; width: min(340px, 100%); }
-  .co-row label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .lede {
+    margin: 20px 0 0;
+    max-width: 27em;
+    color: var(--ink-2);
+    font-size: clamp(17px, 1.9vw, 19px);
+    text-wrap: pretty;
+  }
+  .filing { width: min(340px, 100%); margin-top: 44px; text-align: left; }
+  .co-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-top: 2px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .co-row:focus-within { box-shadow: 0 1px 0 var(--ink); }
   .co-row input {
     flex: 1;
     min-width: 0;
-    height: 44px;
-    padding: 0 14px;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    background: var(--surface);
-    font-weight: 700;
-    font-size: 16px;
-    text-align: center;
-  }
-  .co-row input:focus { outline: 2px solid var(--brand); outline-offset: 1px; }
-  .co-row button {
-    flex: none;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    background: var(--surface);
-    font-size: 20px;
-  }
-
-  .btn-incorporate {
-    position: relative;
-    width: min(300px, 100%);
-    height: 96px;
+    padding: 4px 0 6px;
     border: 0;
-    border-radius: 20px;
-    background: var(--brand);
-    color: var(--brand-ink);
-    box-shadow: 0 8px 0 color-mix(in srgb, var(--brand) 55%, black), var(--shadow);
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    touch-action: manipulation;
-    transition: transform 0.05s, box-shadow 0.05s;
-  }
-  .btn-incorporate small { display: block; font-size: 13px; font-weight: 500; opacity: 0.8; letter-spacing: 0; margin-top: 2px; }
-  .btn-incorporate:active { transform: translateY(6px); box-shadow: 0 2px 0 color-mix(in srgb, var(--brand) 55%, black), var(--shadow); }
-  .btn-incorporate.done {
     background: transparent;
-    color: var(--brand);
-    box-shadow: inset 0 0 0 3px var(--brand);
-    transform: rotate(-4deg);
+    font-size: 23px;
+    font-style: italic;
+    outline: none;
+  }
+  .btn-incorporate {
+    width: min(340px, 100%);
+    height: 58px;
+    margin-top: 26px;
+    border: 0;
+    border-radius: 3px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--serif);
+    font-size: 21px;
+    font-weight: 500;
+    touch-action: manipulation;
+    transition: background-color 0.15s;
+  }
+  .btn-incorporate:hover { background: color-mix(in srgb, var(--ink) 86%, var(--paper)); }
+  .btn-incorporate:active { transform: translateY(1px); }
+  .btn-incorporate.done {
+    transition: none;
+    background: transparent;
+    color: var(--ink-3);
+    font-style: italic;
+    box-shadow: inset 0 0 0 1px var(--rule);
     cursor: default;
   }
-
-  .howto {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
+  body:not([data-state="idle"]) .intro > :not(.btn-incorporate),
+  body:not([data-state="idle"]) .fine-print { visibility: hidden; }
+  .fine-print {
+    position: absolute;
+    left: 50%;
+    bottom: max(18px, env(safe-area-inset-bottom));
+    width: calc(100% - 40px);
+    max-width: 36em;
     margin: 0;
-    padding: 0;
-    list-style: none;
+    transform: translateX(-50%);
     font-size: 13px;
-    color: var(--ink-2);
+    font-style: italic;
+    line-height: 1.45;
+    color: var(--ink-3);
+    text-align: center;
+    text-wrap: balance;
   }
-  .howto li {
-    padding: 5px 10px;
-    border-radius: 999px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-  }
-  .howto b { font-family: var(--mono); color: var(--ink); margin-right: 4px; }
 
-  body[data-state="live"] .copy,
-  body[data-state="live"] .co-row,
-  body[data-state="live"] .howto,
-  body[data-state="done"] .copy,
-  body[data-state="done"] .co-row,
-  body[data-state="done"] .howto { visibility: hidden; }
+  .live {
+    position: absolute;
+    top: clamp(20px, 7vh, 64px);
+    left: 50%;
+    width: calc(100% - 32px);
+    transform: translateX(-50%);
+    text-align: center;
+    pointer-events: none;
+  }
+  .live[hidden] { display: none; }
+  .live-arr { margin-top: 4px; font-size: clamp(40px, 7vw, 76px); font-weight: 500; line-height: 1.05; letter-spacing: -0.02em; }
+  .live-t { margin-top: 8px; font-family: var(--sans); font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 
   .btn-collect {
     position: absolute;
     z-index: 5;
+    min-width: 172px;
+    padding: 11px 22px 14px;
+    overflow: hidden;
     transform: translate(-50%, -50%);
-    width: 176px;
-    padding: 10px 12px 12px;
     border: 0;
-    border-radius: 18px;
-    background: var(--money-bright);
-    color: var(--money-ink);
-    box-shadow: 0 6px 0 color-mix(in srgb, var(--money-bright) 50%, black), var(--shadow);
+    border-radius: 3px;
+    background: var(--green);
+    color: var(--green-ink);
+    box-shadow: 0 10px 30px -12px rgba(20, 30, 20, 0.45);
     touch-action: manipulation;
-    animation: pop 0.12s ease-out;
   }
   .btn-collect[hidden] { display: none; }
-  .btn-collect .lbl { display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
-  .btn-collect .val { display: block; font-family: var(--mono); font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; }
-  .btn-collect.cold { background: #f5c542; box-shadow: 0 6px 0 #8a6a12, var(--shadow); }
-  .btn-collect.dead { background: #ff8a6a; box-shadow: 0 6px 0 #8a3320, var(--shadow); }
-  @keyframes pop { from { transform: translate(-50%, -50%) scale(0.85); } to { transform: translate(-50%, -50%) scale(1); } }
-
-  .live {
-    position: absolute;
-    top: 18px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    pointer-events: none;
-    width: calc(100% - 32px);
-  }
-  .live[hidden] { display: none; }
-  .live-label { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
-  .live-arr { font-family: var(--mono); font-weight: 800; font-size: clamp(34px, 7vw, 64px); color: var(--money); font-variant-numeric: tabular-nums; line-height: 1.1; }
-  .live-t { font-family: var(--mono); font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .collect-label { display: block; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.85; }
+  .collect-val { display: block; margin-top: 1px; font-size: 29px; font-weight: 500; line-height: 1.1; }
+  .collect-meter { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: color-mix(in srgb, currentColor 22%, transparent); }
+  .collect-bar { display: block; height: 100%; background: currentColor; opacity: 0.75; transform-origin: left center; }
 
   .pivot {
     position: absolute;
     transform: translate(-50%, -50%);
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--danger);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--ink-3);
     pointer-events: none;
-    animation: rise 0.6s ease-out forwards;
+    animation: drift 0.7s ease-out forwards;
   }
-  @keyframes rise { to { opacity: 0; transform: translate(-50%, -150%); } }
+  @keyframes drift { to { opacity: 0; transform: translate(-50%, -140%); } }
 
-  /* ---------- sheets (results + leaderboard) ---------- */
+  /* ---------- sheets (results, league table) ---------- */
   .sheet {
     position: fixed;
-    inset: 0;
+    inset: var(--bar-h) 0 0;
     z-index: 20;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 24px 16px;
     overflow-y: auto;
-    background: color-mix(in srgb, var(--bg) 70%, transparent);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    padding: 0 20px;
+    background: var(--paper);
   }
   .sheet[hidden] { display: none; }
   .sheet.arming { pointer-events: none; }
-  .card {
-    width: min(540px, 100%);
-    margin: auto 0;
-    padding: 24px;
-    border-radius: 24px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    box-shadow: var(--shadow);
+  .page { width: min(540px, 100%); margin: 0 auto; padding: 40px 0 72px; animation: settle 0.28s ease-out; }
+  @keyframes settle { from { opacity: 0; transform: translateY(8px); } }
+
+  .tombstone {
+    padding: 34px 32px 26px;
+    border: 1px solid var(--ink);
+    outline: 1px solid var(--ink);
+    outline-offset: -7px;
     text-align: center;
-    animation: slide 0.25s ease-out;
   }
-  @keyframes slide { from { opacity: 0; transform: translateY(16px); } }
-  .res-co { font-weight: 700; font-size: 18px; color: var(--ink-2); overflow-wrap: anywhere; }
-  .res-stage {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 6px 14px;
-    border-radius: 999px;
-    background: var(--surface-2);
-    border: 1px solid var(--line);
-    font-weight: 700;
-    font-size: 16px;
-  }
-  .res-arr {
-    margin-top: 8px;
-    font-family: var(--mono);
-    font-weight: 800;
-    font-size: clamp(52px, 14vw, 88px);
-    line-height: 1;
-    color: var(--money);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.03em;
-  }
-  .res-arr-label { font-family: var(--mono); font-weight: 700; font-size: 14px; letter-spacing: 0.2em; color: var(--ink-3); margin-top: 4px; }
-  [data-kind="dissolved"] .res-arr, [data-kind="flagged"] .res-arr { color: var(--danger); }
-  [data-kind="flagged"] .res-arr { text-decoration: line-through; text-decoration-thickness: 6px; }
-  .res-flavor { margin: 14px auto 0; max-width: 400px; color: var(--ink-2); line-height: 1.45; }
-  .res-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin: 18px 0 0;
-  }
-  .res-stats div { padding: 10px 6px; border-radius: 12px; background: var(--surface-2); min-width: 0; }
-  .res-stats dt { font-size: 11px; color: var(--ink-3); font-weight: 700; letter-spacing: 0.02em; }
-  .res-stats dd { margin: 4px 0 0; font-family: var(--mono); font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-  .res-math { margin: 12px 0 0; font-family: var(--mono); font-size: 12px; color: var(--ink-3); overflow-wrap: anywhere; }
-  .res-pb { margin-top: 12px; font-weight: 700; color: var(--money); min-height: 1.4em; }
-  .res-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 16px; }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    padding: 0 12px;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    background: var(--surface-2);
-    color: var(--ink);
-    font-weight: 700;
-    font-size: 14px;
-    text-decoration: none;
-  }
-  .btn:hover { border-color: var(--ink-3); }
-  .btn.primary {
-    grid-column: 1 / -1;
-    min-height: 54px;
+  .record { margin: 0; font-size: 14px; font-style: italic; color: var(--ink-2); text-wrap: balance; }
+  .ts-co { margin: 22px 0 0; font-size: clamp(24px, 4.4vw, 32px); font-weight: 500; line-height: 1.15; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+  .ts-small { margin: 4px 0 0; font-size: 16px; font-style: italic; color: var(--ink-2); }
+  .ts-arr { margin: 12px 0 6px; font-size: clamp(44px, 11vw, 70px); font-weight: 500; line-height: 1; letter-spacing: -0.025em; white-space: nowrap; }
+  .ts-small sup { font-size: 0.65em; font-style: normal; }
+  .ts-rule { width: 44px; height: 0; margin: 22px auto 18px; border: 0; border-top: 1px solid var(--ink); }
+  .ts-stage { margin: 0; font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--green); }
+  .ts-flavor { margin: 8px auto 0; max-width: 23em; font-size: 16px; line-height: 1.45; color: var(--ink-2); text-wrap: balance; }
+  .ts-foot { margin: 26px 0 0; font-size: 13px; color: var(--ink-3); text-wrap: balance; }
+  [data-kind="flagged"] .ts-arr { color: var(--ink-3); text-decoration: line-through; text-decoration-thickness: 2px; }
+  [data-kind="flagged"] .ts-stage, [data-kind="dissolved"] .ts-stage { color: var(--red); }
+
+  .ledger { margin: 30px 0 0; }
+  .ledger > div { display: flex; align-items: baseline; gap: 10px; padding: 6px 0; font-size: 17px; }
+  .ledger dt { display: flex; flex: 1; align-items: baseline; gap: 10px; min-width: 0; color: var(--ink-2); }
+  .ledger dt::after { content: ""; flex: 1; min-width: 16px; border-bottom: 1px dotted var(--ink-3); opacity: 0.6; transform: translateY(-5px); }
+  .ledger dd { margin: 0; font-variant-numeric: lining-nums tabular-nums; text-align: right; white-space: nowrap; }
+  .ledger .total { padding-top: 8px; }
+  .ledger .total dt { color: var(--ink); font-weight: 500; }
+  .ledger .total dd { padding: 3px 0 2px 24px; border-top: 1px solid var(--ink); border-bottom: 3px double var(--ink); font-weight: 600; }
+  .ledger .after-total { margin-top: 14px; }
+  .note { min-height: 1.5em; margin: 16px 0 0; font-size: 16px; font-style: italic; color: var(--green); }
+  .dev-note { margin: 4px 0 0; font-family: var(--sans); font-size: 12px; color: var(--red); }
+
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 22px; }
+  .btn-primary {
+    height: 52px;
+    padding: 0 30px;
     border: 0;
-    background: var(--brand);
-    color: var(--brand-ink);
-    font-size: 18px;
+    border-radius: 3px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 500;
   }
-  .board-title { margin: 22px 0 8px; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); text-align: left; }
-  .board { list-style: none; margin: 0; padding: 0; text-align: left; }
+  .btn-primary:hover { background: color-mix(in srgb, var(--ink) 86%, var(--paper)); }
+
+  .board-block { margin-top: 52px; }
+  .sheet .page > .board-block:first-child { margin-top: 0; }
+  #boardSheet .page { padding-top: 48px; }
+  .board-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .board-title { margin: 0; font-size: 24px; font-weight: 500; letter-spacing: -0.01em; }
+  .tabs { display: flex; gap: 16px; }
+  .tabs button {
+    padding: 2px 0;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    background: none;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+  .tabs button:hover { color: var(--ink); }
+  .tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+  .board { margin: 0; padding: 0; list-style: none; }
   .board li {
     display: grid;
-    grid-template-columns: minmax(28px, auto) 1fr auto auto;
-    gap: 10px;
+    grid-template-columns: 2.4em minmax(0, 1fr) auto 4.4em;
+    gap: 14px;
     align-items: baseline;
-    padding: 8px 10px;
-    border-radius: 10px;
-    font-size: 14px;
+    padding: 9px 8px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 17px;
   }
-  .board li:nth-child(odd) { background: var(--surface-2); }
-  .board li.me { outline: 2px solid var(--money); outline-offset: -2px; }
-  .board .rk { font-family: var(--mono); color: var(--ink-3); font-weight: 700; }
-  .board .nm { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .board .ar { font-family: var(--mono); font-weight: 800; color: var(--money); }
-  .board .tm { font-family: var(--mono); color: var(--ink-3); font-size: 12px; }
-  .board .empty { display: block; color: var(--ink-3); text-align: center; background: none; }
-  .board .gap { display: block; padding: 0; text-align: center; color: var(--ink-3); background: none; line-height: 1; }
-  .board-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 22px 0 6px; }
-  .board-head .board-title { margin: 0; }
-  .sheet .card > .board-block:first-child .board-head { margin-top: 0; }
-  .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); }
-  .seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; color: var(--ink-2); }
-  .seg button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18); }
-  .board-status { margin: 0 0 8px; font-size: 12px; color: var(--ink-3); text-align: left; }
-  .res-global { margin-top: 4px; font-weight: 700; color: var(--ink-2); }
-  .res-global[hidden] { display: none; }
-  .sheet-close { margin-top: 16px; width: 100%; }
-  .dev-note { margin-top: 8px; font-family: var(--mono); font-size: 12px; color: var(--danger); }
+  .board .rk, .board .ar, .board .tm { text-align: right; font-variant-numeric: lining-nums tabular-nums; }
+  .board .rk { color: var(--ink-3); }
+  .board .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .board .tm { font-size: 15px; color: var(--ink-3); }
+  .board li.cols { padding-top: 12px; padding-bottom: 6px; }
+  .board li.cols span { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-3); }
+  .board li.me { background: color-mix(in srgb, var(--green) 10%, transparent); }
+  .board li.me .nm { font-weight: 600; }
+  .board li.msg { display: block; padding: 18px 8px; font-style: italic; color: var(--ink-3); text-align: center; }
+  .board li.gap { display: block; padding: 2px 8px; border-bottom: 0; color: var(--ink-3); text-align: center; line-height: 1; }
+  .board-status { margin: 10px 0 0; font-family: var(--sans); font-size: 12px; color: var(--ink-3); }
 
   .toast {
     position: fixed;
     left: 50%;
-    bottom: max(20px, env(safe-area-inset-bottom));
+    bottom: max(24px, env(safe-area-inset-bottom));
     z-index: 40;
-    transform: translateX(-50%);
-    padding: 10px 16px;
-    border-radius: 999px;
+    max-width: calc(100% - 32px);
+    padding: 9px 14px;
+    transform: translate(-50%, 8px);
+    border-radius: 3px;
     background: var(--ink);
-    color: var(--bg);
-    font-weight: 700;
-    font-size: 14px;
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.2s;
-    max-width: calc(100% - 32px);
-    text-align: center;
+    transition: opacity 0.2s, transform 0.2s;
   }
-  .toast.show { opacity: 1; }
-  #confetti { position: fixed; inset: 0; z-index: 30; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-  @media (max-width: 520px) {
+  @media (max-width: 560px) {
+    .bar { padding-left: 16px; padding-right: 16px; }
+    .bar-right { gap: 16px; }
     .pb { display: none; }
-    .card { padding: 20px 16px; }
-    .res-stats { grid-template-columns: repeat(2, 1fr); }
-    .res-actions { grid-template-columns: 1fr 1fr; }
-    .res-actions #saveCard { grid-column: 1 / -1; }
-    .btn-incorporate { height: 84px; font-size: 26px; }
-    .btn-collect { width: 150px; }
-    .btn-collect .val { font-size: 22px; }
+    .sheet { padding: 0 16px; }
+    .page { padding-top: 28px; }
+    .tombstone { padding: 28px 18px 22px; outline-offset: -6px; }
+    .ledger > div { font-size: 16px; }
+    .actions { gap: 12px 20px; }
+    .btn-primary { width: 100%; }
+    .board li { grid-template-columns: 1.9em minmax(0, 1fr) auto 3.9em; gap: 10px; padding-left: 4px; padding-right: 4px; font-size: 16px; }
+    .board .tm { font-size: 14px; }
+    .btn-collect { min-width: 150px; padding: 10px 18px 13px; }
+    .collect-val { font-size: 25px; }
   }
-  @media (max-height: 560px) {
-    .sub, .howto { display: none; }
+  @media (max-height: 600px) {
+    .lede, .fine-print { display: none; }
+    .filing { margin-top: 24px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .btn-collect, .card, .pivot { animation: none; }
+    .page, .pivot { animation: none; }
   }
 </style>
 </head>
 <body data-state="idle">
 <div class="app">
   <header class="bar">
-    <div class="logo">📈 Fastest <span>ARR</span></div>
-    <div class="bar-right">
+    <span class="wordmark">Fastest ARR</span>
+    <nav class="bar-right">
       <span class="pb" id="pb"></span>
-      <button class="ghost" id="boardBtn" type="button">Leaderboard</button>
-      <button class="ghost icon" id="muteBtn" type="button" aria-label="Mute sound">🔊</button>
-    </div>
+      <button class="link" id="boardBtn" type="button" aria-controls="boardSheet" aria-expanded="false">League table</button>
+      <button class="link" id="muteBtn" type="button" aria-pressed="false">Sound on</button>
+    </nav>
   </header>
 
   <main class="arena" id="arena">
-    <div class="center">
-      <div class="copy">
-        <p class="kicker">The only metric that matters</p>
-        <h1>Incorporate. Get paid.<br>Annualize.</h1>
-        <p class="sub">Your first micropayment starts at <b>$0.99</b> and <b>halves every 0.25&nbsp;s</b>. Collect it as fast as humanly possible and we extrapolate your yearly run rate.</p>
+    <section class="intro">
+      <h1>Incorporate, then collect your first payment.</h1>
+      <p class="lede">It starts at $0.99 and halves every quarter second. However much you collect, we&rsquo;ll annualize it.</p>
+      <div class="filing">
+        <label class="label" for="co">Company name</label>
+        <div class="co-row">
+          <input id="co" maxlength="32" autocomplete="off" spellcheck="false">
+          <button class="link" id="dice" type="button">Shuffle</button>
+        </div>
       </div>
-      <div class="co-row">
-        <label for="co">Company name</label>
-        <input id="co" maxlength="32" autocomplete="off" spellcheck="false">
-        <button id="dice" type="button" aria-label="Random company name">🎲</button>
-      </div>
-      <button class="btn-incorporate" id="incorporate" type="button">Incorporate<small>Delaware C-Corp · $0 down</small></button>
-      <ul class="howto">
-        <li><b>1</b>Incorporate</li>
-        <li><b>2</b>Collect pops up nearby</li>
-        <li><b>3</b>We annualize it</li>
-      </ul>
-    </div>
+      <button class="btn-incorporate" id="incorporate" type="button">Incorporate</button>
+    </section>
+
+    <p class="fine-print">Run rates are extrapolated from operating histories measured in milliseconds. Past performance is not indicative of future results.</p>
 
     <div class="live" id="live" hidden>
-      <div class="live-label">ARR if you collect now</div>
-      <div class="live-arr" id="liveArr">$0</div>
+      <div class="label">Annualized, if collected now</div>
+      <div class="live-arr num" id="liveArr">$0</div>
       <div class="live-t" id="liveT">0.000 s since incorporation</div>
     </div>
 
     <button class="btn-collect" id="collect" type="button" tabindex="-1" hidden>
-      <span class="lbl">Collect micropayment</span>
-      <span class="val" id="collectVal">$0.9900</span>
+      <span class="collect-label">Collect</span>
+      <span class="collect-val num" id="collectVal">$0.9900</span>
+      <span class="collect-meter"><span class="collect-bar" id="collectBar"></span></span>
     </button>
   </main>
 </div>
 
-<div class="sheet" id="results" role="dialog" aria-modal="true" aria-labelledby="resArr" hidden>
-  <div class="card">
-    <div class="res-co" id="resCo"></div>
-    <div class="res-stage" id="resStage"></div>
-    <div class="res-arr" id="resArr" aria-live="polite"></div>
-    <div class="res-arr-label">ARR</div>
-    <p class="res-flavor" id="resFlavor"></p>
-    <dl class="res-stats">
-      <div><dt>Time to revenue</dt><dd id="resT"></dd></div>
-      <div><dt>Micropayment</dt><dd id="resPay"></dd></div>
-      <div><dt>Valuation (25×)</dt><dd id="resVal"></dd></div>
+<div class="sheet" id="results" role="dialog" aria-modal="true" aria-labelledby="resCo" hidden>
+  <div class="page">
+    <article class="tombstone">
+      <p class="record">This announcement appears as a matter of record only.</p>
+      <h2 class="ts-co" id="resCo"></h2>
+      <p class="ts-small" id="resVerb"></p>
+      <div class="ts-arr num" id="resArr"></div>
+      <p class="ts-small"><span id="resUnit"></span><sup id="resSup">1</sup></p>
+      <hr class="ts-rule">
+      <p class="ts-stage" id="resStage"></p>
+      <p class="ts-flavor" id="resFlavor"></p>
+      <p class="ts-foot" id="resFoot"></p>
+    </article>
+
+    <dl class="ledger">
+      <div><dt>Payment collected</dt><dd id="resPay"></dd></div>
+      <div><dt>Time to first revenue</dt><dd id="resT"></dd></div>
+      <div><dt>Revenue per second</dt><dd id="resRate"></dd></div>
+      <div><dt>Seconds in a year</dt><dd>&times; 31,536,000</dd></div>
+      <div class="total"><dt>Annual recurring revenue</dt><dd id="resTotal"></dd></div>
+      <div class="after-total"><dt>Implied valuation at 25&times;</dt><dd id="resVal"></dd></div>
       <div><dt>Pivots</dt><dd id="resPivots"></dd></div>
+      <div id="resGlobalRow"><dt>Global league table</dt><dd id="resGlobal"></dd></div>
     </dl>
-    <p class="res-math" id="resMath"></p>
-    <div class="res-pb" id="resPb"></div>
-    <div class="res-global" id="resGlobal" hidden></div>
-    <div class="dev-note" id="devNote" hidden>dev run, not saved</div>
-    <div class="res-actions">
-      <button class="btn primary" id="again" type="button">Run it back</button>
-      <a class="btn" id="post" target="_blank" rel="noopener">Post on 𝕏</a>
-      <button class="btn" id="copyPost" type="button">Copy post</button>
-      <button class="btn" id="saveCard" type="button">Save card</button>
+    <p class="note" id="resPb"></p>
+    <p class="dev-note" id="devNote" hidden>Dev run, not recorded.</p>
+
+    <div class="actions">
+      <button class="btn-primary" id="again" type="button">Run it back</button>
+      <a class="link" id="post" target="_blank" rel="noopener">Post to X</a>
+      <button class="link" id="copyPost" type="button">Copy text</button>
+      <button class="link" id="saveCard" type="button">Save image</button>
     </div>
-    <div class="board-block" id="resBoardBlock">
+
+    <section class="board-block" id="resBoardBlock">
       <div class="board-head">
-        <h2 class="board-title">Leaderboard</h2>
-        <div class="seg" role="tablist" aria-label="Leaderboard scope">
+        <h3 class="board-title">League table</h3>
+        <div class="tabs" role="tablist" aria-label="League table scope">
           <button type="button" role="tab" data-scope="global">Global</button>
-          <button type="button" role="tab" data-scope="local">Yours</button>
+          <button type="button" role="tab" data-scope="local">This device</button>
         </div>
       </div>
-      <p class="board-status" data-status></p>
       <ol class="board" data-list></ol>
-    </div>
+      <p class="board-status" data-status></p>
+    </section>
   </div>
 </div>
 
 <div class="sheet" id="boardSheet" role="dialog" aria-modal="true" aria-labelledby="boardTitle" hidden>
-  <div class="card">
-    <div class="board-block" id="sheetBoardBlock">
+  <div class="page">
+    <section class="board-block" id="sheetBoardBlock">
       <div class="board-head">
-        <h2 class="board-title" id="boardTitle">Leaderboard</h2>
-        <div class="seg" role="tablist" aria-label="Leaderboard scope">
+        <h2 class="board-title" id="boardTitle">League table</h2>
+        <div class="tabs" role="tablist" aria-label="League table scope">
           <button type="button" role="tab" data-scope="global">Global</button>
-          <button type="button" role="tab" data-scope="local">Yours</button>
+          <button type="button" role="tab" data-scope="local">This device</button>
         </div>
       </div>
-      <p class="board-status" data-status></p>
       <ol class="board" data-list></ol>
-    </div>
-    <button class="btn sheet-close" id="boardClose" type="button">Close</button>
+      <p class="board-status" data-status></p>
+    </section>
   </div>
 </div>
 
 <div class="toast" id="toast" role="status"></div>
-<canvas id="confetti"></canvas>
 
 <script>
 (() => {
   'use strict';
 
   // ---- tuning ----
-  const START_VALUE = 0.99;         // the micropayment, in dollars
+  const START_VALUE = 0.99;         // the first payment, in dollars
   const HALF_LIFE_MS = 250;         // it loses half its value every quarter second
-  const RUNWAY_MS = 4000;           // after this the company dissolves
+  const RUNWAY_MS = 4000;           // after this the company is wound down
   const HUMAN_FLOOR_MS = 100;       // faster than this isn't a human reacting
   const SECONDS_PER_YEAR = 31_536_000;
   const MULTIPLE = 25;              // "conservative" ARR multiple for the valuation line
@@ -557,6 +521,7 @@
   const BOARD_SIZE = 10;
   const BOARD_KEY = 'fastest-arr:board';
   const MUTE_KEY = 'fastest-arr:muted';
+  const CO_KEY = 'fastest-arr:company';
   const PLAYER_KEY = 'fastest-arr:player';
   const SCOPE_KEY = 'fastest-arr:board-scope';
 
@@ -567,25 +532,24 @@
   const PROD_API = 'https://fastest-arr-api.icpmacdo.workers.dev';
   const API = (isDev && params.get('api')) || PROD_API;
   const submits = r => r.kind === 'ok' && (!r.dev || API !== PROD_API);
-  const CO_KEY = 'fastest-arr:company';
 
   const STAGES = [
-    { min: 100e6, emoji: '🔔', name: 'IPO', flavor: 'Ring the bell. The S-1 just says "see attached clicks."' },
-    { min: 40e6, emoji: '🦄', name: 'Unicorn', flavor: '$1B+ at a conservative 25×. TechCrunch is typing…' },
-    { min: 15e6, emoji: '🚀', name: 'Series B', flavor: 'Time to hire a CRO and lease a floor in SoMa.' },
-    { min: 5e6, emoji: '📈', name: 'Series A', flavor: 'A partner wants to "learn more about the space."' },
-    { min: 1e6, emoji: '🌱', name: 'Seed', flavor: 'Congrats on your "$1M ARR" tweet. It is technically true.' },
-    { min: 100e3, emoji: '🥚', name: 'Pre-seed', flavor: 'Your parents are now strategic angels.' },
-    { min: -Infinity, emoji: '🏖️', name: 'Lifestyle business', flavor: 'Respectfully, this is a hobby.' },
+    { min: 100e6, name: 'IPO', noun: 'public company', flavor: 'The underwriters would like a word about the length of your operating history.' },
+    { min: 40e6, name: 'Unicorn', noun: 'unicorn', flavor: 'Over a billion dollars at a conservative 25 times revenue. Someone is drafting the press release.' },
+    { min: 15e6, name: 'Series B', noun: 'Series B company', flavor: 'Time to hire a Chief Revenue Officer.' },
+    { min: 5e6, name: 'Series A', noun: 'Series A company', flavor: 'A partner would love to learn more about the space.' },
+    { min: 1e6, name: 'Seed', noun: 'seed-stage company', flavor: 'Technically a million-dollar run rate. Post it anyway.' },
+    { min: 100e3, name: 'Pre-seed', noun: 'pre-seed company', flavor: 'Your parents have agreed to lead the round.' },
+    { min: -Infinity, name: 'Lifestyle business', noun: 'lifestyle business', flavor: 'Respectfully, this is a hobby.' },
   ];
-  const DISSOLVED = { emoji: '🪦', name: 'Dissolved', flavor: 'Ran out of runway. The micropayment depreciated to dust.' };
-  const FLAGGED = { emoji: '🚨', name: 'Flagged by auditors', flavor: `Revenue recognized before a human could react (under ${HUMAN_FLOOR_MS} ms). Restating to $0.` };
+  const DISSOLVED = { name: 'Wound down', flavor: 'The payment depreciated to nothing before anyone collected it.' };
+  const FLAGGED = { name: 'Under review', flavor: `Collected in under ${HUMAN_FLOOR_MS} ms, faster than a human can react. The auditors have questions.` };
 
   const COMPANIES = [
-    'Uber for Ferns', 'Cursor for Cats', 'Stripe for Lemonade Stands', 'Agentic Toaster Inc.',
+    'Uber for Ferns', 'Cursor for Cats', 'Stripe for Lemonade Stands', 'Agentic Toaster',
     'Notion for Naps', 'Figma for Fish', 'Ramp for Raccoons', 'Linear for Laundry',
-    'GPT Wrapper #4,812', 'Vibe Capital LLC', 'Airbnb for Parking Cones', 'Palantir for Pets',
-    'Rippling for Ripples', 'Deel or No Deel', 'Brex for Brunch', 'Snowflake for Slush',
+    'Airbnb for Parking Cones', 'Palantir for Pets', 'Deel or No Deel', 'Brex for Brunch',
+    'Snowflake for Slush', 'Rippling for Ripples', 'Vibe Capital', 'Datadog for Dogs',
   ];
 
   // ---- the math ----
@@ -593,6 +557,7 @@
   const arrAt = ms => payoutAt(ms) / (ms / 1000) * SECONDS_PER_YEAR;
   const stageFor = arr => STAGES.find(s => arr >= s.min);
 
+  // $45.3M, for tight columns
   function fmtMoney(n) {
     if (!Number.isFinite(n)) return '$∞';
     const units = [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']];
@@ -609,7 +574,22 @@
     if (n >= 1) return '$' + Math.round(n).toLocaleString('en-US');
     return '$' + n.toFixed(2);
   }
+  // $45,298,576, for the headline figure
+  const fmtFull = n => !Number.isFinite(n) ? '$∞' : n >= 1 ? '$' + Math.round(n).toLocaleString('en-US') : '$' + n.toFixed(2);
+  // $1.13 billion, for prose
+  function fmtWords(n) {
+    const sig = x => x >= 100 ? x.toFixed(0) : x >= 10 ? x.toFixed(1) : x.toFixed(2);
+    if (n >= 1e12) return `$${sig(n / 1e12)} trillion`;
+    if (n >= 1e9) return `$${sig(n / 1e9)} billion`;
+    if (n >= 1e6) return `$${sig(n / 1e6)} million`;
+    return fmtFull(n);
+  }
   const fmtSecs = ms => (ms / 1000).toFixed(3) + ' s';
+  const fmtCount = n => n.toLocaleString('en-US');
+  function ordinal(n) {
+    const s = n % 100 >= 11 && n % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' })[n % 10] || 'th';
+    return fmtCount(n) + s;
+  }
 
   // ---- storage (best effort; the game works without it) ----
   const store = {
@@ -628,7 +608,7 @@
     return rank === -1 ? null : rank;
   }
 
-  // ---- sound ----
+  // ---- sound: quiet, short, sine-based ----
   const sfx = (() => {
     let ctx = null;
     let muted = !!store.get(MUTE_KEY, false);
@@ -642,7 +622,7 @@
       if (ctx.state === 'suspended') ctx.resume();
       return ctx;
     }
-    function tone(freq, at, dur, type, gain, toFreq) {
+    function tone(freq, at, dur, gain, toFreq, type = 'sine') {
       const c = ac();
       if (!c) return;
       const t = c.currentTime + at;
@@ -651,7 +631,8 @@
       o.type = type;
       o.frequency.setValueAtTime(freq, t);
       if (toFreq) o.frequency.exponentialRampToValueAtTime(toFreq, t + dur);
-      g.gain.setValueAtTime(gain, t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(gain, t + 0.006);
       g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
       o.connect(g).connect(c.destination);
       o.start(t);
@@ -659,10 +640,10 @@
     }
     return {
       warm: () => ac(),
-      stamp: () => tone(160, 0, 0.14, 'triangle', 0.35, 55),
-      chaching: () => { tone(1318.5, 0, 0.08, 'square', 0.06); tone(1760, 0.07, 0.4, 'square', 0.06); tone(2637, 0.07, 0.35, 'sine', 0.05); },
-      miss: () => tone(200, 0, 0.07, 'sawtooth', 0.04),
-      sad: () => { tone(392, 0, 0.18, 'triangle', 0.2); tone(330, 0.18, 0.18, 'triangle', 0.2); tone(262, 0.36, 0.5, 'triangle', 0.2); },
+      stamp: () => tone(140, 0, 0.12, 0.3, 70),
+      ding: () => { tone(1568, 0, 0.5, 0.07); tone(2093, 0.06, 0.6, 0.05); },
+      miss: () => tone(320, 0, 0.05, 0.03),
+      low: () => { tone(330, 0, 0.25, 0.09, null, 'triangle'); tone(247, 0.16, 0.45, 0.09, null, 'triangle'); },
       get muted() { return muted; },
       toggle() { muted = !muted; store.set(MUTE_KEY, muted); return muted; },
     };
@@ -674,6 +655,7 @@
   const incBtn = $('incorporate');
   const collectBtn = $('collect');
   const collectVal = $('collectVal');
+  const collectBar = $('collectBar');
   const live = $('live');
   const liveArr = $('liveArr');
   const liveT = $('liveT');
@@ -688,7 +670,7 @@
   let pivots = 0;
   let lastResult = null;
 
-  const siteUrl = location.protocol.startsWith('http') ? location.origin + location.pathname : 'https://ian-macdonald.me/fastest-arr/';
+  const siteUrl = location.protocol.startsWith('http') ? location.origin + location.pathname.replace(/index\.html$/, '') : 'https://ian-macdonald.me/fastest-arr/';
   const siteHost = siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
 
   function randomCompany() {
@@ -710,10 +692,15 @@
 
   function renderPb() {
     const best = loadBoard()[0];
-    $('pb').innerHTML = best ? `Best <b>${fmtMoney(best.arr)}</b>` : 'No ARR yet';
+    const pb = $('pb');
+    pb.replaceChildren();
+    if (!best) return;
+    const b = document.createElement('b');
+    b.textContent = fmtMoney(best.arr);
+    pb.append('Best ', b);
   }
 
-  // ---- leaderboards (local top 10 + global, one entry per player) ----
+  // ---- league tables (this device: top 10 runs; global: each player's best) ----
   const PLAYER_RE = /^[A-Za-z0-9_-]{8,64}$/;
   let player = store.get(PLAYER_KEY, '');
   if (typeof player !== 'string' || !PLAYER_RE.test(player)) {
@@ -763,30 +750,32 @@
       r.global = { error: err.status === 429 ? 'slow' : 'down' };
     }
     if (lastResult === r && !results.hidden) {
-      renderGlobalLine(r);
+      $('resGlobal').textContent = globalText(r);
       renderBoardBlock($('resBoardBlock'), { localId: r.id, limit: 10 });
       updatePostLink(r);
     }
   }
 
-  function emptyRow(text, cls = 'empty') {
+  function messageRow(text, cls = 'msg') {
     const li = document.createElement('li');
     li.className = cls;
     li.textContent = text;
     return li;
   }
 
-  function boardRow(rank, e, mine) {
+  function boardRow(cells, cls) {
     const li = document.createElement('li');
-    if (mine) li.className = 'me';
-    for (const [cls, text] of [['rk', '#' + rank], ['nm', e.co], ['ar', fmtMoney(e.arr)], ['tm', fmtSecs(e.ms)]]) {
+    if (cls) li.className = cls;
+    for (const [c, text] of cells) {
       const span = document.createElement('span');
-      span.className = cls;
+      span.className = c;
       span.textContent = text;
       li.append(span);
     }
     return li;
   }
+  const headerRow = () => boardRow([['rk', ''], ['nm', 'Company'], ['ar', 'ARR'], ['tm', 'Time']], 'cols');
+  const entryRow = (rank, e, mine) => boardRow([['rk', rank], ['nm', e.co], ['ar', fmtMoney(e.arr)], ['tm', (e.ms / 1000).toFixed(3)]], mine ? 'me' : '');
 
   function renderBoardBlock(block, { localId, limit = 100 } = {}) {
     for (const b of block.querySelectorAll('[data-scope]')) b.setAttribute('aria-selected', String(b.dataset.scope === boardScope));
@@ -795,34 +784,34 @@
     ol.replaceChildren();
 
     if (boardScope === 'local') {
-      status.textContent = 'Your top 10 runs, saved in this browser.';
+      status.textContent = 'Your ten best runs, kept in this browser.';
       const board = loadBoard();
-      if (!board.length) { ol.append(emptyRow('No revenue yet. Incorporate something.')); return; }
-      board.forEach((e, i) => ol.append(boardRow(i + 1, e, e.id === localId)));
+      if (!board.length) { ol.append(messageRow('No revenue yet.')); return; }
+      ol.append(headerRow());
+      board.forEach((e, i) => ol.append(entryRow(i + 1, e, e.id === localId)));
       return;
     }
 
     const { top, me } = globalBoard;
     if (!top) {
-      status.textContent = globalBoard.status === 'error'
-        ? 'The global board is unreachable right now. Your runs still save on this device.'
-        : 'Loading the global board…';
+      status.textContent = '';
+      ol.append(messageRow(globalBoard.status === 'error' ? 'The global table is unavailable right now. Runs still count on this device.' : 'Loading…'));
       return;
     }
-    const n = top.total.toLocaleString('en-US');
-    status.textContent = `${n} ${top.total === 1 ? 'company' : 'companies'} ranked · each player's best run`;
-    if (!top.rows.length) { ol.append(emptyRow('Nobody has revenue yet. Be the first.')); return; }
+    status.textContent = `${fmtCount(top.total)} ${top.total === 1 ? 'company' : 'companies'}. Each player’s best run.`;
+    if (!top.rows.length) { ol.append(messageRow('No company has reported revenue yet.')); return; }
+    ol.append(headerRow());
     // match my row by content, not rank: tied ARRs share a rank
     const isMe = e => !!me && e.co === me.co && e.arr === me.arr && e.ms === me.ms;
     let meShown = false;
     top.rows.slice(0, limit).forEach((e, i) => {
       const mine = !meShown && isMe(e);
       meShown = meShown || mine;
-      ol.append(boardRow(i + 1, e, mine));
+      ol.append(entryRow(i + 1, e, mine));
     });
     if (me && !meShown) {
-      ol.append(emptyRow('⋯', 'gap'));
-      ol.append(boardRow(me.rank == null ? '1000+' : me.rank, me, true));
+      ol.append(messageRow('⋯', 'gap'));
+      ol.append(entryRow(me.rank == null ? '1000+' : me.rank, me, true));
     }
   }
 
@@ -841,18 +830,14 @@
     });
   }
 
-  function renderGlobalLine(r) {
-    const el = $('resGlobal');
-    el.hidden = !submits(r);
-    if (el.hidden) return;
+  function globalText(r) {
+    if (r.kind !== 'ok') return 'Not eligible';
+    if (!submits(r)) return 'Not recorded';
     const g = r.global;
-    const of = g && g.total != null ? ` of ${g.total.toLocaleString('en-US')}` : '';
-    if (!g) el.textContent = '🌍 Posting to the global board…';
-    else if (g.error === 'slow') el.textContent = '🌍 Easy, speed demon: too many runs this minute. This one stayed local.';
-    else if (g.error) el.textContent = '🌍 Global board unreachable. Saved on this device.';
-    else if (g.rank === 1) el.textContent = `🌍 #1 in the world${of}. Fastest ARR on the planet.`;
-    else if (g.rank) el.textContent = `🌍 #${g.rank.toLocaleString('en-US')}${of} on the global board`;
-    else el.textContent = `🌍 #1,000+${of} on the global board`;
+    if (!g) return 'Submitting…';
+    if (g.error === 'slow') return 'Too many runs; try again shortly';
+    if (g.error) return 'Unavailable';
+    return g.rank == null ? `Below 1,000th of ${fmtCount(g.total)}` : `${ordinal(g.rank)} of ${fmtCount(g.total)}`;
   }
 
   // ---- round ----
@@ -866,9 +851,10 @@
     const pad = 10;
     const minX = a.left + pad + w / 2, maxX = a.right - pad - w / 2;
     const minY = a.top + pad + h / 2, maxY = a.bottom - pad - h / 2;
-    const inc = incBtn.getBoundingClientRect();
+    // keep clear of the Incorporate stub and the live readout
+    const keepOut = [incBtn.getBoundingClientRect(), live.getBoundingClientRect()];
     const gap = 16;
-    const clearOfInc = (x, y) => x + w / 2 + gap < inc.left || x - w / 2 - gap > inc.right || y + h / 2 + gap < inc.top || y - h / 2 - gap > inc.bottom;
+    const clearOf = (x, y) => keepOut.every(b => x + w / 2 + gap < b.left || x - w / 2 - gap > b.right || y + h / 2 + gap < b.top || y - h / 2 - gap > b.bottom);
     // Same distance every run, random direction, so no run is luckier than another.
     // Small screens shrink the distance until something fits.
     for (const needClear of [true, false]) for (let d = SPAWN_DISTANCE; d >= 60; d -= 20) {
@@ -877,7 +863,7 @@
         const ang = ((i + Math.random()) / 72) * Math.PI * 2;
         const x = px + Math.cos(ang) * d;
         const y = py + Math.sin(ang) * d;
-        if (x >= minX && x <= maxX && y >= minY && y <= maxY && (!needClear || clearOfInc(x, y))) fits.push([x, y]);
+        if (x >= minX && x <= maxX && y >= minY && y <= maxY && (!needClear || clearOf(x, y))) fits.push([x, y]);
       }
       if (fits.length) {
         const [x, y] = fits[Math.floor(Math.random() * fits.length)];
@@ -896,12 +882,12 @@
     state = 'live';
     document.body.dataset.state = 'live';
     if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
-    collectBtn.classList.remove('cold', 'dead');
     collectVal.textContent = '$' + START_VALUE.toFixed(4);
+    collectBar.style.transform = 'scaleX(1)';
     incBtn.classList.add('done');
-    incBtn.firstChild.textContent = 'Incorporated ✓';
-    placeCollect(px, py);
+    incBtn.textContent = 'Incorporated';
     live.hidden = false;
+    placeCollect(px, py);
     // keep the handler lean so the Collect button paints on the next frame
     setTimeout(sfx.stamp, 0);
     raf = requestAnimationFrame(tick);
@@ -912,9 +898,8 @@
     if (ms >= RUNWAY_MS) { finish(ms); return; }
     const pay = payoutAt(ms);
     collectVal.textContent = '$' + pay.toFixed(4);
-    collectBtn.classList.toggle('cold', ms > 450 && ms <= 900);
-    collectBtn.classList.toggle('dead', ms > 900);
-    liveArr.textContent = fmtMoney(arrAt(Math.max(ms, 1)));
+    collectBar.style.transform = `scaleX(${pay / START_VALUE})`;
+    liveArr.textContent = fmtFull(arrAt(Math.max(ms, 1)));
     liveT.textContent = fmtSecs(ms) + ' since incorporation';
     raf = requestAnimationFrame(tick);
   }
@@ -942,51 +927,64 @@
     lastResult = r;
     if (submits(r)) submitRun(r);
 
-    if (kind === 'ok') { sfx.chaching(); navigator.vibrate?.(15); }
-    else sfx.sad();
-    setTimeout(() => showResults(r), kind === 'ok' ? 380 : 250);
+    if (kind === 'ok') { sfx.ding(); navigator.vibrate?.(12); }
+    else sfx.low();
+    setTimeout(() => showResults(r), kind === 'ok' ? 360 : 260);
   }
 
   function showResults(r) {
+    const ok = r.kind === 'ok';
+    const secs = (r.ms / 1000).toFixed(3);
     results.dataset.kind = r.kind;
+
     $('resCo').textContent = r.co;
-    $('resStage').textContent = `${r.stage.emoji} ${r.stage.name}`;
+    $('resVerb').textContent = ok ? 'has reached' : r.kind === 'flagged' ? 'reported' : 'was wound down with';
+    $('resUnit').textContent = r.kind === 'flagged' ? 'in annual recurring revenue, since restated' : 'in annual recurring revenue';
+    $('resSup').hidden = !ok;
+    $('resStage').textContent = r.stage.name;
     $('resFlavor').textContent = r.stage.flavor;
-    $('resT').textContent = r.kind === 'dissolved' ? 'never' : fmtSecs(r.ms);
+    $('resFoot').textContent = ok ? `¹ Extrapolated from ${secs} seconds of operating history.`
+      : r.kind === 'flagged' ? `Payment collected ${secs} seconds after incorporation.`
+      : `Operating history: ${secs} seconds.`;
+
     $('resPay').textContent = '$' + r.pay.toFixed(4);
-    $('resVal').textContent = r.kind === 'ok' ? fmtMoney(r.arr * MULTIPLE) : '—';
+    $('resT').textContent = r.kind === 'dissolved' ? 'None' : secs + ' s';
+    $('resRate').textContent = r.kind === 'dissolved' ? '$0.0000' : '$' + (r.pay / (r.ms / 1000)).toFixed(4);
+    $('resTotal').textContent = r.kind === 'flagged' ? '$0, restated' : fmtFull(r.arr);
+    $('resVal').textContent = ok ? fmtWords(r.arr * MULTIPLE) : 'n.m.';
     $('resPivots').textContent = r.pivots;
-    $('resMath').textContent = `$${r.pay.toFixed(4)} ÷ ${(r.ms / 1000).toFixed(3)} s × 31,536,000 s/yr = ${fmtMoney(r.arr)}`;
-    let pbText = '';
-    if (r.newBest) pbText = r.prevBest ? `New personal best! (was ${fmtMoney(r.prevBest.arr)})` : 'First revenue! Personal best set.';
-    else if (r.rank != null) pbText = `#${r.rank + 1} on your leaderboard`;
-    else if (r.kind === 'ok' && r.prevBest && !r.dev) pbText = `Personal best: ${fmtMoney(r.prevBest.arr)}`;
-    $('resPb').textContent = pbText;
+    $('resGlobal').textContent = globalText(r);
+    $('resGlobalRow').hidden = r.dev && !submits(r);
+
+    let pb = '';
+    if (r.newBest) pb = r.prevBest ? `A new personal best, up from ${fmtMoney(r.prevBest.arr)}.` : 'Your first revenue.';
+    else if (r.rank != null) pb = `Your ${ordinal(r.rank + 1)} best run.`;
+    else if (ok && r.prevBest && !r.dev) pb = `Your best remains ${fmtMoney(r.prevBest.arr)}.`;
+    $('resPb').textContent = pb;
     $('devNote').hidden = !r.dev;
+
     updatePostLink(r);
-    renderGlobalLine(r);
     renderBoardBlock($('resBoardBlock'), { localId: r.id, limit: 10 });
     renderPb();
 
     results.hidden = false;
     results.scrollTop = 0;
-    // the pointerup from the Collect press must not land on a results button
+    // the pointerup from the Collect press must not land on a results control
     results.classList.add('arming');
     setTimeout(() => results.classList.remove('arming'), 450);
-    countUp($('resArr'), r.arr);
+    if (r.kind === 'flagged') $('resArr').textContent = fmtFull(r.arr);
+    else countUp($('resArr'), r.arr);
     $('again').focus({ preventScroll: true });
-
-    if (r.kind === 'ok' && (r.arr >= 40e6 || r.newBest)) confetti(r.arr >= 40e6 ? 220 : 90);
   }
 
   function countUp(el, target) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = fmtFull(target); return; }
     const t1 = performance.now();
-    const dur = 900;
+    const dur = 650;
     const step = now => {
       // rAF's timestamp can predate t1 by a frame; clamp so the first frame never goes negative
       const k = Math.max(0, Math.min(1, (now - t1) / dur));
-      const eased = 1 - Math.pow(1 - k, 3);
-      el.textContent = fmtMoney(target * eased);
+      el.textContent = fmtFull(target * (1 - Math.pow(1 - k, 3)));
       if (k < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
@@ -1000,13 +998,13 @@
     collectBtn.hidden = true;
     live.hidden = true;
     incBtn.classList.remove('done');
-    incBtn.firstChild.textContent = 'Incorporate';
+    incBtn.textContent = 'Incorporate';
   }
 
   incBtn.addEventListener('pointerdown', e => {
     if (state !== 'idle' || !isPrimary(e)) return;
     e.stopPropagation();
-    if (!e.isTrusted) { toast('Synthetic incorporation rejected by Delaware.'); return; }
+    if (!e.isTrusted) { toast('Synthetic clicks are not accepted.'); return; }
     e.preventDefault();
     start(e.timeStamp, e.clientX, e.clientY);
   });
@@ -1014,7 +1012,7 @@
   collectBtn.addEventListener('pointerdown', e => {
     if (state !== 'live' || !isPrimary(e)) return;
     e.stopPropagation();
-    if (!e.isTrusted) { toast('Auditors reject synthetic revenue.'); return; }
+    if (!e.isTrusted) { toast('Synthetic revenue is not accepted.'); return; }
     e.preventDefault();
     finish(e.timeStamp - t0);
   });
@@ -1030,24 +1028,24 @@
     tag.style.left = (e.clientX - a.left) + 'px';
     tag.style.top = (e.clientY - a.top) + 'px';
     arena.append(tag);
-    setTimeout(() => tag.remove(), 650);
+    setTimeout(() => tag.remove(), 750);
   });
 
   // warm the audio context on an early gesture so the first round isn't slowed by it
   document.addEventListener('pointerdown', () => setTimeout(sfx.warm, 0), { once: true });
 
-  // ---- results actions ----
+  // ---- sharing ----
   const POSTS = [
-    r => `Thrilled to announce ${r.co} just crossed ${fmtMoney(r.arr)} ARR 🚀\n\nIncorporated → first micropayment in ${fmtSecs(r.ms)}. Annualized, obviously.`,
-    r => `Humbled to share that ${r.co} has hit ${r.stage.emoji} ${r.stage.name} status.\n\n${fmtMoney(r.arr)} ARR, ${fmtSecs(r.ms)} from incorporation to revenue. Grateful to the team (me) 🙏`,
-    r => `We don't talk about it much, but ${r.co} is doing ${fmtMoney(r.arr)} ARR.\n\n(${fmtSecs(r.ms)} of data, extrapolated. Like everyone else.)`,
+    r => `${r.co} has reached ${fmtFull(r.arr)} in annual recurring revenue.\n\nTime from incorporation to first revenue: ${(r.ms / 1000).toFixed(3)} seconds. Annualized, as is customary.`,
+    r => `Pleased to share that ${r.co} is now a ${r.stage.noun}.\n\n${fmtMoney(r.arr)} ARR, ${(r.ms / 1000).toFixed(3)} seconds after incorporating.`,
+    r => `We don't usually share numbers, but ${r.co} is at ${fmtMoney(r.arr)} ARR.\n\n(${(r.ms / 1000).toFixed(3)} seconds of data, extrapolated.)`,
   ];
   function postText(r) {
-    if (r.kind === 'dissolved') return `${r.co} ran out of runway ${fmtSecs(r.ms)} after incorporating 🪦\n\nShutting down to spend more time with my cap table. What's your run rate?`;
-    if (r.kind === 'flagged') return `${r.co} posted ${fmtMoney(r.arr)} ARR and immediately got flagged by the auditors 🚨`;
+    if (r.kind === 'dissolved') return `${r.co} has been wound down, ${(r.ms / 1000).toFixed(3)} seconds after incorporating. We thank our investors.\n\nYour turn:`;
+    if (r.kind === 'flagged') return `${r.co} reported ${fmtMoney(r.arr)} in ARR. The auditors have questions.`;
     if (!r.postIdx) r.postIdx = 1 + Math.floor(Math.random() * POSTS.length);
-    const rank = r.global && r.global.rank ? `\n\n#${r.global.rank.toLocaleString('en-US')} on the global leaderboard.` : '';
-    return POSTS[r.postIdx - 1](r) + rank + '\n\nBeat my run rate:';
+    const rank = r.global && r.global.rank ? `\n\n${ordinal(r.global.rank)} on the global league table.` : '';
+    return POSTS[r.postIdx - 1](r) + rank + '\n\nYour turn:';
   }
   function updatePostLink(r) {
     $('post').href = 'https://x.com/intent/post?text=' + encodeURIComponent(postText(r)) + '&url=' + encodeURIComponent(siteUrl);
@@ -1057,16 +1055,15 @@
 
   $('copyPost').addEventListener('click', async () => {
     if (!lastResult) return;
-    const text = postText(lastResult) + ' ' + siteUrl;
-    try { await navigator.clipboard.writeText(text); toast('Copied. Go raise.'); }
-    catch { toast('Copy failed. Your clipboard is pre-revenue.'); }
+    try { await navigator.clipboard.writeText(postText(lastResult) + ' ' + siteUrl); toast('Copied.'); }
+    catch { toast('Could not copy.'); }
   });
 
   $('saveCard').addEventListener('click', async () => {
     if (!lastResult) return;
     const canvas = await drawCard(lastResult);
     canvas.toBlob(async blob => {
-      if (!blob) { toast('Could not render the card.'); return; }
+      if (!blob) { toast('Could not render the image.'); return; }
       const slug = lastResult.co.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'startup';
       const file = new File([blob], `fastest-arr-${slug}.png`, { type: 'image/png' });
       if (matchMedia('(pointer: coarse)').matches && navigator.canShare?.({ files: [file] })) {
@@ -1078,104 +1075,113 @@
       a.download = file.name;
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-      toast('Card saved.');
+      toast('Image saved.');
     }, 'image/png');
   });
 
+  // The share image is a tombstone: the notice banks print to announce a closed deal.
   async function drawCard(r) {
-    try { await document.fonts.ready; } catch {}
+    const fonts = ['500 120px Newsreader', 'italic 400 24px Newsreader', '600 18px Inter'];
+    try { await Promise.all(fonts.map(f => document.fonts.load(f))); } catch {}
     const W = 1200, H = 630;
     const c = document.createElement('canvas');
-    c.width = W; c.height = H;
+    c.width = W * 2; c.height = H * 2;
     const g = c.getContext('2d');
+    g.scale(2, 2);
     const ok = r.kind === 'ok';
-    const accent = ok ? '#22e39a' : '#ff5d63';
+    const ink = '#1c1b18', ink2 = '#4f4b44', ink3 = '#8b8578';
 
-    const bg = g.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, '#070a14');
-    bg.addColorStop(1, '#111b36');
-    g.fillStyle = bg;
+    g.fillStyle = '#f3eee4';
     g.fillRect(0, 0, W, H);
-
-    g.strokeStyle = 'rgba(238,241,250,0.05)';
+    g.strokeStyle = ink;
+    g.lineWidth = 1.5;
+    g.strokeRect(36.5, 36.5, W - 73, H - 73);
     g.lineWidth = 1;
-    for (let x = 0; x <= W; x += 60) { g.beginPath(); g.moveTo(x + 0.5, 0); g.lineTo(x + 0.5, H); g.stroke(); }
-    for (let y = 0; y <= H; y += 60) { g.beginPath(); g.moveTo(0, y + 0.5); g.lineTo(W, y + 0.5); g.stroke(); }
+    g.strokeRect(46.5, 46.5, W - 93, H - 93);
 
-    // hockey stick (or the other kind)
-    g.save();
-    g.globalAlpha = 0.28;
-    g.strokeStyle = accent;
-    g.lineWidth = 8;
-    g.lineCap = 'round';
-    g.beginPath();
-    for (let i = 0; i <= 120; i++) {
-      const t = i / 120;
-      const x = 620 + t * 540;
-      const y = ok ? 490 - Math.pow(t, 5) * 400 : 110 + (1 - Math.pow(1 - t, 4)) * 380;
-      i ? g.lineTo(x, y) : g.moveTo(x, y);
-    }
-    g.stroke();
-    g.restore();
-
+    g.textAlign = 'center';
+    g.textBaseline = 'alphabetic';
+    const cx = W / 2;
     const fit = (text, maxW) => {
       if (g.measureText(text).width <= maxW) return text;
       let s = text;
       while (s.length > 1 && g.measureText(s + '…').width > maxW) s = s.slice(0, -1);
       return s + '…';
     };
+    const serif = '"Newsreader", Georgia, serif';
 
-    g.textBaseline = 'alphabetic';
-    g.fillStyle = '#22e39a';
-    g.font = '800 30px "JetBrains Mono", ui-monospace, monospace';
-    g.fillText('📈 FASTEST ARR', 64, 92);
+    g.fillStyle = ink2;
+    g.font = `italic 400 22px ${serif}`;
+    g.fillText('This announcement appears as a matter of record only.', cx, 112);
 
-    g.fillStyle = '#eef1fa';
-    g.font = '700 50px "Space Grotesk", system-ui, sans-serif';
-    g.fillText(fit(r.co, W - 128), 64, 190);
+    g.fillStyle = ink;
+    g.font = `500 46px ${serif}`;
+    g.fillText(fit(r.co, 900), cx, 186);
 
-    const arrStr = fmtMoney(r.arr);
-    g.fillStyle = accent;
-    g.font = '800 172px "JetBrains Mono", ui-monospace, monospace';
-    g.fillText(arrStr, 56, 372);
-    const arrW = g.measureText(arrStr).width;
-    if (r.kind === 'flagged') g.fillRect(56, 312, arrW, 12);
-    g.fillStyle = '#a6aec6';
-    g.font = '800 46px "JetBrains Mono", ui-monospace, monospace';
-    g.fillText('ARR', 56 + arrW + 22, 372);
+    g.fillStyle = ink2;
+    g.font = `italic 400 24px ${serif}`;
+    g.fillText(ok ? 'has reached' : r.kind === 'flagged' ? 'reported' : 'was wound down with', cx, 228);
 
-    g.fillStyle = '#eef1fa';
-    g.font = '700 36px "Space Grotesk", system-ui, sans-serif';
-    const stageLine = `${r.stage.emoji} ${r.stage.name}` + (ok ? `  ·  ${fmtMoney(r.arr * MULTIPLE)} valuation` : '');
-    g.fillText(fit(stageLine, W - 128), 64, 452);
+    const fig = fmtFull(r.arr);
+    g.fillStyle = r.kind === 'flagged' ? ink3 : ink;
+    g.font = `500 ${fig.length > 12 ? 104 : 118}px ${serif}`;
+    g.fillText(fig, cx, 342);
+    if (r.kind === 'flagged') {
+      const w = g.measureText(fig).width;
+      g.fillRect(cx - w / 2, 302, w, 3);
+    }
 
-    g.fillStyle = '#a6aec6';
-    g.font = '500 28px "Space Grotesk", system-ui, sans-serif';
-    const line = r.kind === 'dissolved' ? `Ran out of runway ${fmtSecs(r.ms)} after incorporating.` : `Incorporated → first micropayment in ${fmtSecs(r.ms)}. Annualized, obviously.`;
-    g.fillText(fit(line, W - 128), 64, 540);
+    g.fillStyle = ink2;
+    g.font = `italic 400 24px ${serif}`;
+    g.fillText(r.kind === 'flagged' ? 'in annual recurring revenue, since restated' : 'in annual recurring revenue', cx, 388);
 
-    g.fillStyle = '#6b7390';
-    g.font = '700 24px "JetBrains Mono", ui-monospace, monospace';
-    g.fillText(siteHost, 64, 586);
+    g.fillStyle = ink;
+    g.fillRect(cx - 24, 424, 48, 1);
+
+    g.fillStyle = ok ? '#1d6a44' : '#a3392e';
+    g.font = `600 17px Inter, system-ui, sans-serif`;
+    if ('letterSpacing' in g) g.letterSpacing = '3px';
+    g.fillText(r.stage.name.toUpperCase(), cx, 466);
+    if ('letterSpacing' in g) g.letterSpacing = '0px';
+
+    g.fillStyle = ink2;
+    g.font = `400 21px ${serif}`;
+    g.fillText(fit(r.stage.flavor, 900), cx, 504);
+
+    g.fillStyle = ink3;
+    g.font = `400 18px ${serif}`;
+    const foot = ok ? `Extrapolated from ${(r.ms / 1000).toFixed(3)} seconds of operating history`
+      : r.kind === 'flagged' ? `Collected ${(r.ms / 1000).toFixed(3)} seconds after incorporation`
+      : `Operating history: ${(r.ms / 1000).toFixed(3)} seconds`;
+    g.fillText(`${foot}  ·  ${siteHost}`, cx, 560);
     return c;
   }
 
-  // ---- leaderboard sheet ----
+  // ---- league table sheet ----
+  // the header link doubles as the sheet's close control
+  const boardBtn = $('boardBtn');
   function openBoard() {
     renderBoardBlock($('sheetBoardBlock'));
     boardSheet.hidden = false;
-    $('boardClose').focus({ preventScroll: true });
+    boardBtn.textContent = 'Close';
+    boardBtn.setAttribute('aria-expanded', 'true');
+    boardSheet.querySelector('[aria-selected="true"]')?.focus({ preventScroll: true });
     refreshGlobal(true).then(rerenderBoards);
   }
-  const closeBoard = () => { boardSheet.hidden = true; };
-  $('boardBtn').addEventListener('click', () => { if (state !== 'live') openBoard(); });
-  $('boardClose').addEventListener('click', closeBoard);
-  boardSheet.addEventListener('click', e => { if (e.target === boardSheet) closeBoard(); });
+  function closeBoard() {
+    boardSheet.hidden = true;
+    boardBtn.textContent = 'League table';
+    boardBtn.setAttribute('aria-expanded', 'false');
+  }
+  boardBtn.addEventListener('click', () => {
+    if (!boardSheet.hidden) closeBoard();
+    else if (state !== 'live') openBoard();
+  });
 
   const muteBtn = $('muteBtn');
   const renderMute = () => {
-    muteBtn.textContent = sfx.muted ? '🔇' : '🔊';
-    muteBtn.setAttribute('aria-label', sfx.muted ? 'Unmute sound' : 'Mute sound');
+    muteBtn.textContent = sfx.muted ? 'Sound off' : 'Sound on';
+    muteBtn.setAttribute('aria-pressed', String(!sfx.muted));
   };
   muteBtn.addEventListener('click', () => { sfx.toggle(); renderMute(); });
 
@@ -1183,61 +1189,25 @@
     if (e.key === 'Escape') {
       if (!boardSheet.hidden) closeBoard();
       else if (!results.hidden) reset();
-    } else if ((e.key === 'r' || e.key === 'R') && !results.hidden && !e.metaKey && !e.ctrlKey) {
+    } else if ((e.key === 'r' || e.key === 'R') && !results.hidden && boardSheet.hidden && !e.metaKey && !e.ctrlKey) {
       reset();
     }
   });
-
-  // ---- confetti ----
-  const confettiCanvas = $('confetti');
-  function confetti(count) {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const g = confettiCanvas.getContext('2d');
-    const dpr = window.devicePixelRatio || 1;
-    confettiCanvas.width = innerWidth * dpr;
-    confettiCanvas.height = innerHeight * dpr;
-    g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const colors = ['#22e39a', '#7a6cff', '#f5c542', '#ff5d63', '#4cc9ff'];
-    const parts = Array.from({ length: count }, () => ({
-      x: innerWidth / 2 + (Math.random() - 0.5) * 120,
-      y: innerHeight * 0.35,
-      vx: (Math.random() - 0.5) * 16,
-      vy: -Math.random() * 15 - 5,
-      r: Math.random() * Math.PI,
-      vr: (Math.random() - 0.5) * 0.4,
-      s: 6 + Math.random() * 6,
-      c: colors[Math.floor(Math.random() * colors.length)],
-    }));
-    const t1 = performance.now();
-    const step = now => {
-      g.clearRect(0, 0, innerWidth, innerHeight);
-      for (const p of parts) {
-        p.vy += 0.45; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
-        g.save(); g.translate(p.x, p.y); g.rotate(p.r);
-        g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2);
-        g.restore();
-      }
-      if (now - t1 < 2600) requestAnimationFrame(step);
-      else g.clearRect(0, 0, innerWidth, innerHeight);
-    };
-    requestAnimationFrame(step);
-  }
 
   renderPb();
   renderMute();
   refreshGlobal(false);
 
-  // ?dev exposes the math and lets a test harness finish a round at a chosen time (never saved).
+  // ?dev exposes the math and lets a test harness drive a round at a chosen time (never saved locally).
   if (isDev) {
     window.fastestArr = {
-      payoutAt, arrAt, stageFor, fmtMoney, postText,
+      payoutAt, arrAt, stageFor, fmtMoney, fmtFull, fmtWords, ordinal, postText,
       start() {
-        const a = arena.getBoundingClientRect();
-        if (state === 'idle') start(performance.now(), a.left + a.width / 2, a.top + a.height / 2);
+        const b = incBtn.getBoundingClientRect();
+        if (state === 'idle') start(performance.now(), b.left + b.width / 2, b.top + b.height / 2);
       },
       finish(ms) {
-        const a = arena.getBoundingClientRect();
-        if (state === 'idle') start(performance.now(), a.left + a.width / 2, a.top + a.height / 2);
+        this.start();
         finish(ms, { dev: true });
       },
       drawCard: () => lastResult && drawCard(lastResult).then(c => c.toDataURL('image/png')),

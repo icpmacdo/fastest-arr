@@ -1,0 +1,57 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Fastest ARR state check</title>
+<!-- Dev harness: renders the game in several states side by side.
+     Serve the repo root over http, then open /scripts/states.html with optional params:
+       w, h      frame size (default 390x844)
+       states    comma list of idle, live, result, unicorn, flagged, dissolved, board, card
+                 (default: idle,live,result,dissolved,board)
+       api       passed through to the game (e.g. http://127.0.0.1:8799), so result frames submit to a local `wrangler dev`
+     It seeds a sample "This device" table into this origin's localStorage (overwriting it). -->
+<script>
+  localStorage.setItem('fastest-arr:board', JSON.stringify([
+    { id: 'a', co: 'Cursor for Cats', arr: 62.4e6, ms: 250, at: 0 },
+    { id: 'b', co: 'Stripe for Lemonade Stands', arr: 25.7e6, ms: 400, at: 0 },
+    { id: 'c', co: 'Uber for Ferns', arr: 15.6e6, ms: 500, at: 0 },
+    { id: 'd', co: 'Agentic Toaster', arr: 1.95e6, ms: 1000, at: 0 },
+  ]));
+</script>
+<style>
+  body { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; background: #777; }
+  iframe { border: 0; background: #fff; }
+  img { display: block; }
+</style>
+<body>
+<script>
+  const q = new URLSearchParams(location.search);
+  const w = q.get('w') || 390, h = q.get('h') || 844;
+  const states = (q.get('states') || 'idle,live,result,dissolved,board').split(',');
+  const api = q.get('api');
+  const src = '../index.html?dev' + (api ? '&api=' + encodeURIComponent(api) : '');
+  const frames = states.map(s => {
+    const f = document.createElement('iframe');
+    f.src = src;
+    f.style.width = w + 'px';
+    f.style.height = h + 'px';
+    document.body.append(f);
+    return [s, f];
+  });
+  addEventListener('load', async () => {
+    for (const [s, f] of frames) {
+      const game = f.contentWindow.fastestArr;
+      if (s === 'live') game.start();
+      if (s === 'result') game.finish(400);
+      if (s === 'unicorn') game.finish(300);
+      if (s === 'flagged') game.finish(62);
+      if (s === 'dissolved') game.finish(5000);
+      if (s === 'board') f.contentDocument.getElementById('boardBtn').click();
+      if (s === 'card') {
+        game.finish(300);
+        const img = new Image();
+        img.src = await game.drawCard();
+        img.style.width = '1200px';
+        f.replaceWith(img);
+      }
+    }
+  });
+</script>
