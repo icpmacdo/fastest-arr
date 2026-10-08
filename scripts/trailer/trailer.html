@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fastest ARR trailer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  /* A single page with a seekable timeline: window.seek(t) draws the frame at t seconds. render.py captures it. */
+  :root { --paper:#fbfaf7; --ink:#2a2926; --ink2:#5c5851; --ink3:#78736a; --rule:#e8e5dd; --green:#2a7050; --red:#a3392e; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); }
+  body { position: relative; color: var(--ink); font-family: "Newsreader", Georgia, serif; text-align: center; font-variant-numeric: lining-nums; }
+  .num { font-variant-numeric: lining-nums tabular-nums; }
+  .scene { position: absolute; inset: 0; display: none; }
+  .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .label { font-family: "Inter", sans-serif; font-size: 22px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); }
+  .it { font-style: italic; color: var(--ink2); }
+  .line { opacity: 0; }
+
+  .a .line { font-size: 62px; font-style: italic; color: var(--ink2); line-height: 1.3; }
+  .b h1 { margin: 0; font-size: 260px; font-weight: 400; letter-spacing: -.03em; line-height: 1; }
+
+  .co-field { width: 700px; margin-top: 18px; border-bottom: 1px solid var(--ink); font-size: 62px; font-style: italic; text-align: left; padding: 6px 0 12px; height: 92px; }
+  .caret { display: inline-block; width: 2px; height: 56px; background: var(--ink); vertical-align: -8px; margin-left: 3px; }
+  .btn { margin-top: 56px; width: 700px; height: 104px; border-radius: 3px; background: var(--ink); color: var(--paper); font-size: 40px; line-height: 104px; }
+  .btn.done { background: transparent; color: var(--ink3); font-style: italic; box-shadow: inset 0 0 0 1px var(--rule); }
+
+  .live-arr { margin-top: 30px; font-size: 190px; line-height: 1.05; letter-spacing: -.02em; }
+  .live-t { margin-top: 14px; font-family: "Inter", sans-serif; font-size: 26px; color: var(--ink3); }
+  .collect { position: absolute; width: 360px; height: 150px; margin: -75px 0 0 -180px; border-radius: 3px; overflow: hidden; background: var(--paper); box-shadow: inset 0 0 0 1px var(--green); }
+  .collect .fill { position: absolute; left: 0; top: 0; bottom: 0; overflow: hidden; background: var(--green); }
+  .collect .face { position: absolute; left: 0; top: 0; width: 360px; height: 150px; padding-top: 16px; color: var(--green); }
+  .collect .fill .face { color: #f6f2ea; }
+  .collect .face .l { font-family: "Inter", sans-serif; font-size: 22px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+  .collect .face .v { font-size: 62px; line-height: 1; margin-top: 12px; }
+  .cursor { position: absolute; width: 72px; height: 72px; margin: -6px 0 0 -10px; filter: drop-shadow(0 2px 2px rgba(0,0,0,.18)); }
+  .caption { position: absolute; left: 0; right: 0; bottom: 70px; font-size: 30px; font-style: italic; color: var(--ink3); }
+
+  .tomb { position: relative; width: 1180px; padding: 84px 60px 64px; border: 1.5px solid var(--ink3); }
+  .tomb .record { font-size: 28px; font-style: italic; color: var(--ink2); }
+  .tomb .co { margin-top: 36px; font-size: 64px; line-height: 1.1; }
+  .tomb .verb { margin-top: 8px; font-size: 32px; font-style: italic; color: var(--ink2); }
+  .tomb .arr { margin-top: 20px; font-size: 190px; line-height: 1; letter-spacing: -.03em; white-space: nowrap; }
+  .tomb .unit { margin-top: 12px; font-size: 32px; font-style: italic; color: var(--ink2); }
+  .tomb .rule { width: 56px; height: 1px; margin: 44px auto 34px; background: var(--rule); border: 0; }
+  .tomb .stage { font-family: "Inter", sans-serif; font-size: 22px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--green); }
+  .tomb .flavor { margin: 14px auto 0; max-width: 900px; font-size: 34px; line-height: 1.4; color: var(--ink2); }
+  .tomb .foot { margin-top: 48px; font-size: 24px; color: var(--ink3); }
+  .tomb.flagged .arr { color: var(--ink3); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .tomb.flagged .stage, .tomb.dissolved .stage { color: var(--red); }
+  .tomb.mini { width: 1100px; padding: 70px 50px 56px; }
+  .tomb.mini .arr { font-size: 170px; }
+
+  .ledger { width: 920px; text-align: left; }
+  .ledger .row { display: flex; justify-content: space-between; padding: 18px 0; font-size: 44px; opacity: 0; }
+  .ledger .row dt, .ledger .row dd { margin: 0; }
+  .ledger .row dt { color: var(--ink2); }
+  .ledger .total { margin-top: 10px; border-top: 1px solid var(--rule); padding-top: 28px; }
+  .ledger .total dt { color: var(--ink); }
+
+  .quote { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; }
+  .quote q { quotes: "\201C" "\201D"; font-size: 108px; line-height: 1.12; letter-spacing: -.015em; max-width: 1500px; }
+  .quote .by { margin-top: 36px; }
+
+  .title h1 { margin: 0; font-size: 190px; font-weight: 400; letter-spacing: .14em; padding-left: .14em; line-height: 1; }
+  .title .tag { margin-top: 40px; font-size: 54px; font-style: italic; color: var(--ink2); }
+  .title .now { margin-top: 90px; font-size: 40px; }
+  .title .url { margin-top: 18px; font-size: 54px; }
+  .title .fine { position: absolute; left: 0; right: 0; bottom: 70px; font-size: 28px; font-style: italic; color: var(--ink3); }
+</style>
+</head>
+<body>
+
+<div class="scene a" id="A"><div class="center">
+  <div class="line" id="A1">In a world where every startup claims to be growing fast,</div>
+  <div class="line" id="A2" style="margin-top:34px;color:var(--ink)">one founder had a simple question.</div>
+</div></div>
+
+<div class="scene b" id="B"><div class="center">
+  <h1 id="B1" class="line">How fast?</h1>
+  <div class="label line" id="B2" style="margin-top:34px">Measured in milliseconds</div>
+</div></div>
+
+<div class="scene" id="C"><div class="center">
+  <div class="label">Company name</div>
+  <div class="co-field" id="C1"></div>
+  <div class="btn" id="C2">Incorporate</div>
+</div>
+  <svg class="cursor" id="Ccur" viewBox="0 0 24 24"><path d="M5 2l14 10-6.2 1.4L16 20l-2.8 1.2-3.2-6.6L5 18z" fill="#2a2926" stroke="#fbfaf7" stroke-width="1.4" stroke-linejoin="round"/></svg>
+</div>
+
+<div class="scene" id="D">
+  <div style="position:absolute;top:96px;left:0;right:0">
+    <div class="label">Annualized, if collected now</div>
+    <div class="live-arr num" id="D1"></div>
+    <div class="live-t num" id="D2"></div>
+  </div>
+  <div class="collect" id="D3"><div class="face"><div class="l">Collect</div><div class="v num" id="D3a"></div></div>
+    <div class="fill" id="D3f"><div class="face"><div class="l">Collect</div><div class="v num" id="D3b"></div></div></div></div>
+  <svg class="cursor" id="Dcur" viewBox="0 0 24 24"><path d="M5 2l14 10-6.2 1.4L16 20l-2.8 1.2-3.2-6.6L5 18z" fill="#2a2926" stroke="#fbfaf7" stroke-width="1.4" stroke-linejoin="round"/></svg>
+  <div class="caption">Shown at one-thirteenth speed.</div>
+</div>
+
+<div class="scene" id="E"><div class="center">
+  <article class="tomb" id="E1">
+    <div class="record">This announcement appears as a matter of record only.</div>
+    <div class="co" id="E2"></div><div class="verb">has reached</div>
+    <div class="arr num" id="E3"></div>
+    <div class="unit">in annual recurring revenue</div>
+    <hr class="rule">
+    <div class="stage" id="E4"></div><div class="flavor" id="E5"></div>
+    <div class="foot" id="E6"></div>
+  </article>
+</div></div>
+
+<div class="scene" id="F"><div class="center">
+  <dl class="ledger" style="margin:0">
+    <div class="row"><dt>Payment collected</dt><dd class="num" id="F1"></dd></div>
+    <div class="row"><dt>Time to first revenue</dt><dd class="num" id="F2"></dd></div>
+    <div class="row"><dt>Seconds in a year</dt><dd class="num">&times; 31,536,000</dd></div>
+    <div class="row total"><dt>Annual recurring revenue</dt><dd class="num" id="F3"></dd></div>
+    <div class="row"><dt>Implied valuation at 25&times;</dt><dd class="num" id="F4"></dd></div>
+  </dl>
+  <div class="caption" style="position:absolute">The math is real.</div>
+</div></div>
+
+<div class="scene" id="G">
+  <div class="quote"><q>Technically accurate.</q><div class="by label">A sole bookrunner</div></div>
+  <div class="quote"><q>A Series B in a quarter of a second.</q><div class="by label">Whoever wrote the flavor text</div></div>
+  <div class="quote"><q>Your parents have agreed to lead the round.</q><div class="by label">Pre-seed, correctly</div></div>
+</div>
+
+<div class="scene" id="H"><div class="center">
+  <article class="tomb mini" id="H1">
+    <div class="record">This announcement appears as a matter of record only.</div>
+    <div class="co" id="H2"></div><div class="verb" id="H3"></div>
+    <div class="arr num" id="H4"></div>
+    <div class="unit" id="H5"></div>
+    <hr class="rule"><div class="stage" id="H6"></div>
+  </article>
+</div></div>
+
+<div class="scene title" id="I"><div class="center">
+  <h1 class="line" id="I1">FASTEST ARR</h1>
+  <div class="tag line" id="I2">Incorporate. Collect. Annualize.</div>
+  <div class="label now line" id="I3">Now playing in any browser</div>
+  <div class="url line" id="I4">ian-macdonald.me/fastest-arr</div>
+</div>
+<div class="fine line" id="I5">Past performance is not indicative of future results.</div></div>
+
+<script>
+const W = 1920, H = 1080, START = 0.99, HALF = 250, YEAR = 31536000;
+const payoutAt = ms => START * Math.pow(0.5, ms / HALF);
+const arrAt = ms => payoutAt(ms) / (ms / 1000) * YEAR;
+const money = n => '$' + Math.round(n).toLocaleString('en-US');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = x => (x = clamp(x), x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);
+const out = x => 1 - Math.pow(1 - clamp(x), 3);
+const $ = id => document.getElementById(id);
+const show = (id, o, y = 0) => { const e = $(id); e.style.opacity = o; e.style.transform = `translateY(${(1 - o) * y}px)`; };
+// a line that fades in at `at` over 0.5s
+const reveal = (id, t, at, y = 14) => show(id, out((t - at) / .5), y);
+
+const STAGES = [
+  { min: 100e6, name: 'IPO', flavor: 'The underwriters would like a word about the length of your operating history.' },
+  { min: 40e6, name: 'Unicorn', flavor: 'Over a billion dollars at a conservative 25 times revenue. Someone is drafting the press release.' },
+  { min: 15e6, name: 'Series B', flavor: 'Time to hire a Chief Revenue Officer.' },
+  { min: 5e6, name: 'Series A', flavor: 'A partner would love to learn more about the space.' },
+  { min: 1e6, name: 'Seed', flavor: 'Technically a million-dollar run rate. Post it anyway.' },
+];
+const stageFor = arr => STAGES.find(s => arr >= s.min) || { name: 'Lifestyle business', flavor: 'Respectfully, this is a hobby.' };
+
+const MAIN_MS = 300;                       // the hero run: 0.300 s after incorporation
+const HERO = { co: 'Notion for Naps', ms: MAIN_MS, arr: arrAt(MAIN_MS) };
+
+// ---- timeline: [id, start, end] ----
+const SC = { A: [0, 3.4], B: [3.4, 6.0], C: [6.0, 8.0], D: [8.0, 12.4], E: [12.4, 16.6], F: [16.6, 19.4], G: [19.4, 23.2], H: [23.2, 27.0], I: [27.0, 32.0] };
+window.DURATION = 32;
+
+const jumps = [[960, 700], [560, 760], [1360, 700], [900, 790]];   // collect-button positions
+const cut = [0, 1.0, 2.2, 3.1];                                     // local times of each position
+const DLEN = 3.9;                                                   // slow-mo length of the 0.300 s
+
+function seek(t) {
+  for (const [id, [a, b]] of Object.entries(SC)) {
+    const el = $(id), on = t >= a && t < b;
+    el.style.display = on ? 'block' : 'none';
+    if (!on) continue;
+    const l = t - a, d = b - a;
+    const fade = clamp(Math.min(l / .25, (d - l) / .25));
+    el.style.opacity = id === 'I' ? clamp(l / .25) : fade;
+    SCENES[id](l, d);
+  }
+}
+
+const SCENES = {
+  A(l) { reveal('A1', l, .3); reveal('A2', l, 1.7); },
+  B(l) { reveal('B1', l, .15, 24); reveal('B2', l, 1.2); },
+  C(l) {
+    const name = 'Notion for Naps', n = Math.floor(clamp((l - .15) / .8) * name.length);
+    $('C1').innerHTML = name.slice(0, n) + (Math.floor(l * 2.2) % 2 === 0 && n < name.length ? '<i class="caret"></i>' : '');
+    const k = ease((l - .6) / .75);
+    const bx = 960, by = 770 + 58;
+    const cx = 1560 + (bx - 1560) * k, cy = 960 + (by - 960) * k;
+    const click = l > 1.2;
+    $('C2').className = 'btn' + (click ? ' done' : '');
+    $('C2').textContent = click ? 'Incorporated' : 'Incorporate';
+    const c = $('Ccur'); c.style.left = cx + 'px'; c.style.top = cy + 'px';
+    c.style.transform = `scale(${l > 1.15 && l < 1.3 ? .86 : 1})`;
+    c.style.opacity = click ? clamp(1 - (l - 1.4) / .3) : 1;
+  },
+  D(l) {
+    const g = clamp(l / DLEN) * MAIN_MS;               // game ms
+    const gs = Math.max(g, 1);
+    $('D1').textContent = money(arrAt(gs));
+    $('D2').textContent = (g / 1000).toFixed(3) + ' s since incorporation';
+    // button hops
+    let i = 0; for (let k = 0; k < cut.length; k++) if (l >= cut[k]) i = k;
+    const p = jumps[i], pv = jumps[Math.max(0, i - 1)];
+    const b = $('D3'); b.style.left = p[0] + 'px'; b.style.top = p[1] + 'px';
+    const f = payoutAt(g) / START;
+    $('D3f').style.width = (f * 360) + 'px';
+    const v = '$' + payoutAt(g).toFixed(4);
+    $('D3a').textContent = v; $('D3b').textContent = v;
+    // cursor chases the button, arrives .55s after each hop; clicks at the end
+    const since = l - cut[i], m = ease(since / .55);
+    const from = i === 0 ? [1560, 980] : pv;
+    const cx = from[0] + (p[0] - from[0]) * m + 30, cy = from[1] + (p[1] - from[1]) * m + 36;
+    const c = $('Dcur'); c.style.left = cx + 'px'; c.style.top = cy + 'px';
+    c.style.transform = `scale(${l > DLEN - .12 ? .86 : 1})`;
+    $('D1').style.color = g >= MAIN_MS ? 'var(--ink)' : 'var(--ink)';
+  },
+  E(l) {
+    const frame = $('E1'); frame.style.opacity = out(l / .5);
+    $('E2').textContent = HERO.co;
+    const s = stageFor(HERO.arr);
+    $('E3').textContent = money(HERO.arr);
+    $('E4').textContent = s.name; $('E5').textContent = s.flavor;
+    $('E6').textContent = `Extrapolated from ${(HERO.ms / 1000).toFixed(3)} seconds of operating history.`;
+    reveal('E2', l, .35); reveal('E3', l, .8, 24);
+    for (const [id, at] of [['E4', 2.1], ['E5', 2.4], ['E6', 3.0]]) reveal(id, l, at);
+  },
+  F(l) {
+    $('F1').textContent = '$' + payoutAt(HERO.ms).toFixed(4);
+    $('F2').textContent = (HERO.ms / 1000).toFixed(3) + ' s';
+    $('F3').textContent = money(HERO.arr);
+    $('F4').textContent = HERO.arr * 25 >= 1e9 ? '$' + (HERO.arr * 25 / 1e9).toFixed(2) + ' billion' : '$' + Math.round(HERO.arr * 25 / 1e6) + ' million';
+    document.querySelectorAll('#F .row').forEach((r, i) => { r.style.opacity = out((l - .2 - i * .3) / .35); });
+    $('F').querySelector('.caption').style.opacity = out((l - 1.9) / .4);
+  },
+  G(l, d) {
+    const qs = $('G').querySelectorAll('.quote'), n = qs.length, seg = d / n;
+    qs.forEach((q, i) => {
+      const on = l >= i * seg && l < (i + 1) * seg;
+      q.style.display = on ? 'flex' : 'none';
+      if (!on) return;
+      const li = l - i * seg;
+      q.style.opacity = clamp(Math.min(li / .2, (seg - li) / .2));
+      q.style.transform = `scale(${1 + li * .012})`;
+    });
+  },
+  H(l, d) {
+    const cards = [
+      { co: 'Figma for Fish', ms: 400, kind: 'ok' },
+      { co: 'Datadog for Dogs', ms: 834.2, kind: 'ok' },
+      { co: 'Stripe for Soup', ms: 50, kind: 'flagged' },
+      { co: 'Airbnb for Airbnbs', ms: 4000, kind: 'dissolved' },
+    ];
+    const seg = d / cards.length, i = Math.min(cards.length - 1, Math.floor(l / seg)), c = cards[i];
+    const li = l - i * seg;
+    const arr = c.kind === 'dissolved' ? 0 : arrAt(c.ms);
+    const s = c.kind === 'ok' ? stageFor(arr) : null;
+    const t = $('H1'); t.className = 'tomb mini ' + (c.kind === 'ok' ? '' : c.kind);
+    $('H2').textContent = c.co;
+    $('H3').textContent = c.kind === 'ok' ? 'has reached' : c.kind === 'flagged' ? 'reported' : 'was wound down with';
+    $('H4').textContent = money(arr);
+    $('H5').textContent = c.kind === 'flagged' ? 'in annual recurring revenue, since restated' : c.kind === 'dissolved' ? 'in annual recurring revenue' : 'in annual recurring revenue';
+    $('H6').textContent = c.kind === 'ok' ? s.name : c.kind === 'flagged' ? 'Under review' : 'Dissolved';
+    t.style.opacity = clamp(Math.min(li / .12, (seg - li) / .1));
+    t.style.transform = `scale(${.97 + li * .02})`;
+  },
+  I(l) {
+    reveal('I1', l, .1, 20); reveal('I2', l, 1.1); reveal('I3', l, 2.2); reveal('I4', l, 2.7); reveal('I5', l, 3.7);
+  },
+};
+window.seek = seek;
+window.HERO = HERO;
+window.fontsReady = document.fonts.ready;
+seek(0);
+</script>
+</body>
+</html>
