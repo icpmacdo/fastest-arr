@@ -48,8 +48,8 @@
   .tomb .foot { margin-top: 48px; font-size: 24px; color: var(--ink3); }
   .tomb.flagged .arr { color: var(--ink3); text-decoration: line-through; text-decoration-thickness: 2px; }
   .tomb.flagged .stage, .tomb.dissolved .stage { color: var(--red); }
-  .tomb.mini { width: 1100px; padding: 70px 50px 56px; }
-  .tomb.mini .arr { font-size: 170px; }
+  .tomb.mini { width: 1180px; padding: 70px 70px 56px; text-align: center; }
+  .tomb.mini .arr { display: inline-block; font-size: 150px; }
 
   .ledger { width: 920px; text-align: left; }
   .ledger .row { display: flex; justify-content: space-between; padding: 18px 0; font-size: 44px; opacity: 0; }
@@ -273,7 +273,8 @@ const SCENES = {
     const t = $('H1'); t.className = 'tomb mini ' + (c.kind === 'ok' ? '' : c.kind);
     $('H2').textContent = c.co;
     $('H3').textContent = c.kind === 'ok' ? 'has reached' : c.kind === 'flagged' ? 'reported' : 'was wound down with';
-    $('H4').textContent = money(arr);
+    const fig = $('H4'); fig.style.fontSize = '150px'; fig.textContent = money(arr);
+    const fw = fig.offsetWidth; if (fw > 940) fig.style.fontSize = (150 * 940 / fw) + 'px';   // keep the figure inside the frame
     $('H5').textContent = c.kind === 'flagged' ? 'in annual recurring revenue, since restated' : c.kind === 'dissolved' ? 'in annual recurring revenue' : 'in annual recurring revenue';
     $('H6').textContent = c.kind === 'ok' ? s.name : c.kind === 'flagged' ? 'Under review' : 'Dissolved';
     t.style.opacity = clamp(Math.min(li / .12, (seg - li) / .1));
