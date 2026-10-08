@@ -65,8 +65,8 @@ def audio(dur, scenes):
     add(scenes["E"][0] + .05, tone(110, 2.5, .9, 0.02, ((2, .5), (3, .3), (4, .15))), .12)
     for i in range(5): ding(scenes["F"][0] + .2 + i * .3 + .05, .12 + .02 * i)   # ledger rows
     for i in range(3): thud(scenes["G"][0] + i * (scenes["G"][1] - scenes["G"][0]) / 3, 70, .45, .5)
-    seg = (scenes["H"][1] - scenes["H"][0]) / 4
-    for i in range(4): thud(scenes["H"][0] + i * seg, 62 + i * 7, .6, .45); whoosh(scenes["H"][0] + i * seg - .05, .22, .08)
+    seg = (scenes["H"][1] - scenes["H"][0]) / 3
+    for i in range(3): thud(scenes["H"][0] + i * seg, 62 + i * 7, .6, .45); whoosh(scenes["H"][0] + i * seg - .05, .22, .08)
     b = scenes["I"][0] + .1                                          # title: a very polite braam
     for f, g in ((55, .5), (82.5, .35), (110, .3), (165, .15)):
         tt = np.arange(int(3.2 * SR)) / SR
