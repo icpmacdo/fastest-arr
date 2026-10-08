@@ -375,7 +375,7 @@
   .board { list-style: none; margin: 0; padding: 0; text-align: left; }
   .board li {
     display: grid;
-    grid-template-columns: 28px 1fr auto auto;
+    grid-template-columns: minmax(28px, auto) 1fr auto auto;
     gap: 10px;
     align-items: baseline;
     padding: 8px 10px;
@@ -389,7 +389,16 @@
   .board .ar { font-family: var(--mono); font-weight: 800; color: var(--money); }
   .board .tm { font-family: var(--mono); color: var(--ink-3); font-size: 12px; }
   .board .empty { display: block; color: var(--ink-3); text-align: center; background: none; }
-  .board-note { margin: 10px 0 0; font-size: 12px; color: var(--ink-3); }
+  .board .gap { display: block; padding: 0; text-align: center; color: var(--ink-3); background: none; line-height: 1; }
+  .board-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 22px 0 6px; }
+  .board-head .board-title { margin: 0; }
+  .sheet .card > .board-block:first-child .board-head { margin-top: 0; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); }
+  .seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; color: var(--ink-2); }
+  .seg button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18); }
+  .board-status { margin: 0 0 8px; font-size: 12px; color: var(--ink-3); text-align: left; }
+  .res-global { margin-top: 4px; font-weight: 700; color: var(--ink-2); }
+  .res-global[hidden] { display: none; }
   .sheet-close { margin-top: 16px; width: 100%; }
   .dev-note { margin-top: 8px; font-family: var(--mono); font-size: 12px; color: var(--danger); }
 
@@ -491,6 +500,7 @@
     </dl>
     <p class="res-math" id="resMath"></p>
     <div class="res-pb" id="resPb"></div>
+    <div class="res-global" id="resGlobal" hidden></div>
     <div class="dev-note" id="devNote" hidden>dev run, not saved</div>
     <div class="res-actions">
       <button class="btn primary" id="again" type="button">Run it back</button>
@@ -498,16 +508,33 @@
       <button class="btn" id="copyPost" type="button">Copy post</button>
       <button class="btn" id="saveCard" type="button">Save card</button>
     </div>
-    <h2 class="board-title">Your leaderboard</h2>
-    <ol class="board" id="resBoard"></ol>
+    <div class="board-block" id="resBoardBlock">
+      <div class="board-head">
+        <h2 class="board-title">Leaderboard</h2>
+        <div class="seg" role="tablist" aria-label="Leaderboard scope">
+          <button type="button" role="tab" data-scope="global">Global</button>
+          <button type="button" role="tab" data-scope="local">Yours</button>
+        </div>
+      </div>
+      <p class="board-status" data-status></p>
+      <ol class="board" data-list></ol>
+    </div>
   </div>
 </div>
 
 <div class="sheet" id="boardSheet" role="dialog" aria-modal="true" aria-labelledby="boardTitle" hidden>
   <div class="card">
-    <h2 class="board-title" id="boardTitle" style="margin-top:0">Your leaderboard</h2>
-    <ol class="board" id="board"></ol>
-    <p class="board-note">Top 10 runs, saved in this browser.</p>
+    <div class="board-block" id="sheetBoardBlock">
+      <div class="board-head">
+        <h2 class="board-title" id="boardTitle">Leaderboard</h2>
+        <div class="seg" role="tablist" aria-label="Leaderboard scope">
+          <button type="button" role="tab" data-scope="global">Global</button>
+          <button type="button" role="tab" data-scope="local">Yours</button>
+        </div>
+      </div>
+      <p class="board-status" data-status></p>
+      <ol class="board" data-list></ol>
+    </div>
     <button class="btn sheet-close" id="boardClose" type="button">Close</button>
   </div>
 </div>
@@ -530,6 +557,16 @@
   const BOARD_SIZE = 10;
   const BOARD_KEY = 'fastest-arr:board';
   const MUTE_KEY = 'fastest-arr:muted';
+  const PLAYER_KEY = 'fastest-arr:player';
+  const SCOPE_KEY = 'fastest-arr:board-scope';
+
+  const params = new URLSearchParams(location.search);
+  const isDev = params.has('dev');
+  // ?dev&api=http://127.0.0.1:8799 points the game at a local `wrangler dev` instead of production.
+  // Faked ?dev rounds are only ever submitted to such a non-production API.
+  const PROD_API = 'https://fastest-arr-api.icpmacdo.workers.dev';
+  const API = (isDev && params.get('api')) || PROD_API;
+  const submits = r => r.kind === 'ok' && (!r.dev || API !== PROD_API);
   const CO_KEY = 'fastest-arr:company';
 
   const STAGES = [
@@ -650,7 +687,6 @@
   let raf = 0;
   let pivots = 0;
   let lastResult = null;
-  const isDev = new URLSearchParams(location.search).has('dev');
 
   const siteUrl = location.protocol.startsWith('http') ? location.origin + location.pathname : 'https://ian-macdonald.me/fastest-arr/';
   const siteHost = siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
@@ -677,28 +713,146 @@
     $('pb').innerHTML = best ? `Best <b>${fmtMoney(best.arr)}</b>` : 'No ARR yet';
   }
 
-  function renderBoard(ol, highlightId) {
-    const board = loadBoard();
+  // ---- leaderboards (local top 10 + global, one entry per player) ----
+  const PLAYER_RE = /^[A-Za-z0-9_-]{8,64}$/;
+  let player = store.get(PLAYER_KEY, '');
+  if (typeof player !== 'string' || !PLAYER_RE.test(player)) {
+    player = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)).replace(/[^A-Za-z0-9_-]/g, '');
+    store.set(PLAYER_KEY, player);
+  }
+  const globalBoard = { top: null, me: null, status: 'idle' };  // status: idle | loading | ok | error
+  let boardScope = store.get(SCOPE_KEY, 'global') === 'local' ? 'local' : 'global';
+
+  async function api(path, init) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 6000);
+    try {
+      const res = await fetch(API + path, { ...init, signal: ctrl.signal });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw Object.assign(new Error(body.error || 'HTTP ' + res.status), { status: res.status });
+      return body;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function refreshGlobal(withMe) {
+    if (!globalBoard.top) globalBoard.status = 'loading';
+    try {
+      const [top, me] = await Promise.all([
+        api('/top'),
+        withMe ? api('/me?player=' + encodeURIComponent(player)) : null,
+      ]);
+      globalBoard.top = top;
+      if (me) globalBoard.me = me.me;
+      globalBoard.status = 'ok';
+    } catch {
+      if (!globalBoard.top) globalBoard.status = 'error';
+    }
+  }
+
+  async function submitRun(r) {
+    try {
+      // a plain-text body keeps this a "simple" request, so there's no CORS preflight
+      const res = await api('/score', { method: 'POST', body: JSON.stringify({ player, co: r.co, ms: r.ms }) });
+      globalBoard.top = { total: res.total, rows: res.rows };
+      globalBoard.me = res.me;
+      globalBoard.status = 'ok';
+      r.global = { rank: res.rank, total: res.total, best: res.best };
+    } catch (err) {
+      r.global = { error: err.status === 429 ? 'slow' : 'down' };
+    }
+    if (lastResult === r && !results.hidden) {
+      renderGlobalLine(r);
+      renderBoardBlock($('resBoardBlock'), { localId: r.id, limit: 10 });
+      updatePostLink(r);
+    }
+  }
+
+  function emptyRow(text, cls = 'empty') {
+    const li = document.createElement('li');
+    li.className = cls;
+    li.textContent = text;
+    return li;
+  }
+
+  function boardRow(rank, e, mine) {
+    const li = document.createElement('li');
+    if (mine) li.className = 'me';
+    for (const [cls, text] of [['rk', '#' + rank], ['nm', e.co], ['ar', fmtMoney(e.arr)], ['tm', fmtSecs(e.ms)]]) {
+      const span = document.createElement('span');
+      span.className = cls;
+      span.textContent = text;
+      li.append(span);
+    }
+    return li;
+  }
+
+  function renderBoardBlock(block, { localId, limit = 100 } = {}) {
+    for (const b of block.querySelectorAll('[data-scope]')) b.setAttribute('aria-selected', String(b.dataset.scope === boardScope));
+    const ol = block.querySelector('[data-list]');
+    const status = block.querySelector('[data-status]');
     ol.replaceChildren();
-    if (!board.length) {
-      const li = document.createElement('li');
-      li.className = 'empty';
-      li.textContent = 'No revenue yet. Incorporate something.';
-      ol.append(li);
+
+    if (boardScope === 'local') {
+      status.textContent = 'Your top 10 runs, saved in this browser.';
+      const board = loadBoard();
+      if (!board.length) { ol.append(emptyRow('No revenue yet. Incorporate something.')); return; }
+      board.forEach((e, i) => ol.append(boardRow(i + 1, e, e.id === localId)));
       return;
     }
-    board.forEach((e, i) => {
-      const li = document.createElement('li');
-      if (e.id === highlightId) li.className = 'me';
-      const cells = [['rk', '#' + (i + 1)], ['nm', e.co], ['ar', fmtMoney(e.arr)], ['tm', fmtSecs(e.ms)]];
-      for (const [cls, text] of cells) {
-        const span = document.createElement('span');
-        span.className = cls;
-        span.textContent = text;
-        li.append(span);
-      }
-      ol.append(li);
+
+    const { top, me } = globalBoard;
+    if (!top) {
+      status.textContent = globalBoard.status === 'error'
+        ? 'The global board is unreachable right now. Your runs still save on this device.'
+        : 'Loading the global board…';
+      return;
+    }
+    const n = top.total.toLocaleString('en-US');
+    status.textContent = `${n} ${top.total === 1 ? 'company' : 'companies'} ranked · each player's best run`;
+    if (!top.rows.length) { ol.append(emptyRow('Nobody has revenue yet. Be the first.')); return; }
+    // match my row by content, not rank: tied ARRs share a rank
+    const isMe = e => !!me && e.co === me.co && e.arr === me.arr && e.ms === me.ms;
+    let meShown = false;
+    top.rows.slice(0, limit).forEach((e, i) => {
+      const mine = !meShown && isMe(e);
+      meShown = meShown || mine;
+      ol.append(boardRow(i + 1, e, mine));
     });
+    if (me && !meShown) {
+      ol.append(emptyRow('⋯', 'gap'));
+      ol.append(boardRow(me.rank == null ? '1000+' : me.rank, me, true));
+    }
+  }
+
+  function rerenderBoards() {
+    if (!results.hidden && lastResult) renderBoardBlock($('resBoardBlock'), { localId: lastResult.id, limit: 10 });
+    if (!boardSheet.hidden) renderBoardBlock($('sheetBoardBlock'));
+  }
+
+  for (const id of ['resBoardBlock', 'sheetBoardBlock']) {
+    $(id).addEventListener('click', e => {
+      const tab = e.target.closest('[data-scope]');
+      if (!tab) return;
+      boardScope = tab.dataset.scope;
+      store.set(SCOPE_KEY, boardScope);
+      rerenderBoards();
+    });
+  }
+
+  function renderGlobalLine(r) {
+    const el = $('resGlobal');
+    el.hidden = !submits(r);
+    if (el.hidden) return;
+    const g = r.global;
+    const of = g && g.total != null ? ` of ${g.total.toLocaleString('en-US')}` : '';
+    if (!g) el.textContent = '🌍 Posting to the global board…';
+    else if (g.error === 'slow') el.textContent = '🌍 Easy, speed demon: too many runs this minute. This one stayed local.';
+    else if (g.error) el.textContent = '🌍 Global board unreachable. Saved on this device.';
+    else if (g.rank === 1) el.textContent = `🌍 #1 in the world${of}. Fastest ARR on the planet.`;
+    else if (g.rank) el.textContent = `🌍 #${g.rank.toLocaleString('en-US')}${of} on the global board`;
+    else el.textContent = `🌍 #1,000+${of} on the global board`;
   }
 
   // ---- round ----
@@ -772,6 +926,7 @@
     collectBtn.hidden = true;
     live.hidden = true;
 
+    ms = Math.round(ms * 10) / 10;  // 0.1 ms is plenty, and it's what the server sees
     let kind = 'ok';
     if (ms >= RUNWAY_MS) { kind = 'dissolved'; ms = RUNWAY_MS; }
     else if (ms < HUMAN_FLOOR_MS) kind = 'flagged';
@@ -785,6 +940,7 @@
     r.newBest = r.rank === 0;
     r.prevBest = prevBest;
     lastResult = r;
+    if (submits(r)) submitRun(r);
 
     if (kind === 'ok') { sfx.chaching(); navigator.vibrate?.(15); }
     else sfx.sad();
@@ -807,8 +963,9 @@
     else if (r.kind === 'ok' && r.prevBest && !r.dev) pbText = `Personal best: ${fmtMoney(r.prevBest.arr)}`;
     $('resPb').textContent = pbText;
     $('devNote').hidden = !r.dev;
-    $('post').href = 'https://x.com/intent/post?text=' + encodeURIComponent(postText(r)) + '&url=' + encodeURIComponent(siteUrl);
-    renderBoard($('resBoard'), r.id);
+    updatePostLink(r);
+    renderGlobalLine(r);
+    renderBoardBlock($('resBoardBlock'), { localId: r.id, limit: 10 });
     renderPb();
 
     results.hidden = false;
@@ -889,7 +1046,11 @@
     if (r.kind === 'dissolved') return `${r.co} ran out of runway ${fmtSecs(r.ms)} after incorporating 🪦\n\nShutting down to spend more time with my cap table. What's your run rate?`;
     if (r.kind === 'flagged') return `${r.co} posted ${fmtMoney(r.arr)} ARR and immediately got flagged by the auditors 🚨`;
     if (!r.postIdx) r.postIdx = 1 + Math.floor(Math.random() * POSTS.length);
-    return POSTS[r.postIdx - 1](r) + '\n\nBeat my run rate:';
+    const rank = r.global && r.global.rank ? `\n\n#${r.global.rank.toLocaleString('en-US')} on the global leaderboard.` : '';
+    return POSTS[r.postIdx - 1](r) + rank + '\n\nBeat my run rate:';
+  }
+  function updatePostLink(r) {
+    $('post').href = 'https://x.com/intent/post?text=' + encodeURIComponent(postText(r)) + '&url=' + encodeURIComponent(siteUrl);
   }
 
   $('again').addEventListener('click', reset);
@@ -1001,9 +1162,10 @@
 
   // ---- leaderboard sheet ----
   function openBoard() {
-    renderBoard($('board'));
+    renderBoardBlock($('sheetBoardBlock'));
     boardSheet.hidden = false;
     $('boardClose').focus({ preventScroll: true });
+    refreshGlobal(true).then(rerenderBoards);
   }
   const closeBoard = () => { boardSheet.hidden = true; };
   $('boardBtn').addEventListener('click', () => { if (state !== 'live') openBoard(); });
@@ -1063,6 +1225,7 @@
 
   renderPb();
   renderMute();
+  refreshGlobal(false);
 
   // ?dev exposes the math and lets a test harness finish a round at a chosen time (never saved).
   if (isDev) {

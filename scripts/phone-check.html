@@ -1,7 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
 <title>Fastest ARR phone check</title>
-<!-- Dev harness: five 390px phones (idle, mid-round, result, dissolved, leaderboard). Serve the repo root over http and open /scripts/phone-check.html.
+<!-- Dev harness: five 390px phones (idle, mid-round, result, dissolved, leaderboard). Serve the repo root over http and open /scripts/phone-check.html[?api=http://127.0.0.1:8799].
      It seeds a sample leaderboard into this origin's localStorage (overwriting it), so don't use it on an origin whose scores you care about. -->
 <script>
   localStorage.setItem('fastest-arr:board', JSON.stringify([
@@ -15,12 +15,17 @@
   body { margin: 0; display: flex; gap: 6px; background: #888; }
   iframe { width: 390px; height: 844px; border: 0; background: #fff; }
 </style>
-<iframe id="idle" src="../index.html?dev"></iframe>
-<iframe id="live" src="../index.html?dev"></iframe>
-<iframe id="result" src="../index.html?dev"></iframe>
-<iframe id="dissolved" src="../index.html?dev"></iframe>
-<iframe id="board" src="../index.html?dev"></iframe>
+<body>
 <script>
+  // ?api=http://127.0.0.1:8799 passes through to the game, so the result phone submits to a local `wrangler dev`
+  const api = new URLSearchParams(location.search).get('api');
+  const src = '../index.html?dev' + (api ? '&api=' + encodeURIComponent(api) : '');
+  for (const id of ['idle', 'live', 'result', 'dissolved', 'board']) {
+    const f = document.createElement('iframe');
+    f.id = id;
+    f.src = src;
+    document.body.append(f);
+  }
   addEventListener('load', () => {
     const w = id => document.getElementById(id).contentWindow;
     w('live').fastestArr.start();
